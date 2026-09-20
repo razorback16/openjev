@@ -102,8 +102,10 @@ class Engine:
 
     def build_schema(self, questions):
         """Jev questions -> internal question list. Ids are never shown to the
-        model; it sees q1, q2, ... and the answers map back by position."""
-        qs = []
+        model; it sees q1, q2, ... and the answers map back by position.
+        A choice with one option, or a score with one level, has only one
+        possible answer, so it is answered here ("forced") rather than read."""
+        qs, forced = [], {}
         for i, (qid, q) in enumerate(questions.items()):
             loc = ("body", "questions", qid, "criteria")
             kind = q["type"]
@@ -113,16 +115,24 @@ class Engine:
                 labels = ["yes", "no"]
             elif kind == "choice":
                 crit = q["criteria"]
-                if len(crit) < 2:
-                    raise SchemaError("a choice needs at least two options", loc)
+                if not crit:
+                    raise SchemaError(f"Choice question must have at least one choice: {qid}", loc)
+                if len(crit) == 1:
+                    only = next(iter(crit))
+                    forced[qid] = {"type": "choice", "choice": only, "probabilities": {only: 1.0}, "confidence": 1.0}
+                    continue
                 if len(crit) > len(self.choice_labels):
-                    raise SchemaError(f"OpenJev supports at most {len(self.choice_labels)} options per choice", loc)
+                    raise SchemaError(f"Too many choices. Must have at most {len(self.choice_labels)} choices.", loc)
                 choices = [(name, text_of(desc)) for name, desc in crit.items()]
                 labels = self.choice_labels[: len(choices)]
             elif kind == "score":
                 crit = q["criteria"]
-                if not 2 <= len(crit) <= 10:
-                    raise SchemaError("a score takes 2 to 10 levels", loc)
+                if len(crit) > 10:
+                    raise SchemaError("Too many score levels. Must have at most 10 levels.", loc)
+                if len(crit) == 1:  # one level, one possible score, as on Jev
+                    forced[qid] = {"type": "score", "score": 0.0, "legend": {"0": crit[0]},
+                                   "probabilities": {"0": 1.0}, "confidence": 1.0}
+                    continue
                 choices = [(str(i), text_of(c)) for i, c in enumerate(crit)]
                 labels = [str(i) for i in range(len(crit))]
             else:  # the request model rejects this first
@@ -131,7 +141,9 @@ class Engine:
                        "choices": choices, "labels": labels,
                        # score legends echo the criteria exactly as sent
                        "legend": list(q["criteria"]) if kind == "score" else None})
-        return {"questions": qs, "format": "lines" if len(qs) <= 10 else "indexed"}
+        for i, q in enumerate(qs):  # the model sees q1, q2, ... with the forced ones left out
+            q["id"] = f"q{i + 1}"
+        return {"questions": qs, "forced": forced, "format": "lines" if len(qs) <= 10 else "indexed"}
 
     def system_text(self, qs, fmt, chunked=False):
         s = ("Answer a fixed set of questions about the state the user provides. "
@@ -336,8 +348,10 @@ class Engine:
             fmt = schema["format"]
             state_text = state if isinstance(state, str) else json.dumps(state, ensure_ascii=False)
             content = list(images) + [{"type": "text", "text": state_text}] if images else state_text
-            groups = self.groups(schema["questions"], fmt)
-            if opts["sequential"] and len(groups) > 1:
+            groups = self.groups(schema["questions"], fmt) if schema["questions"] else []
+            if not groups:  # every question was answered without a read
+                results = []
+            elif opts["sequential"] and len(groups) > 1:
                 results = await self._sequential(groups, fmt, schema["questions"], state_text, seed, opts)
             else:
                 chunked = len(groups) > 1
@@ -346,12 +360,13 @@ class Engine:
                     for k, g in enumerate(groups)])
         finally:
             self.waiting -= 1
-        answers, billed, thought = {}, 0, 0
+        answers, billed, thought = dict(schema["forced"]), 0, 0
         for g, (means, group_billed, group_thought) in zip(groups, results):
             billed += group_billed
             thought += group_thought
             for q, mean in zip(g, means):
                 answers[q["key"]] = to_answer(q, mean)
+        answers = {k: answers[k] for k in questions}  # answered in the order asked
         return answers, billed, thought
 
     async def _sequential(self, groups, fmt, all_qs, state_text, seed, opts):

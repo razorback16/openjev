@@ -1,4 +1,5 @@
 """Offline tests: the real tokenizer, a stubbed vLLM read."""
+import json as _json
 import math
 
 import msgspec
@@ -106,10 +107,10 @@ def test_validation_shapes(client):
     r = client.post("/v1/systemone", json={"state": "x", "model": "jev-latest", "questions": {}})
     assert r.status_code == 422
     r = client.post("/v1/systemone", json={"state": "x", "model": "jev-latest",
-                                           "questions": {"a": {"type": "score", "criteria": ["only one"]}}})
-    assert r.status_code == 422 and isinstance(r.json()["detail"], list)
+                                           "questions": {"a": {"type": "score", "criteria": [f"l{i}" for i in range(11)]}}})
+    assert r.status_code == 400 and r.json()["detail"] == "Too many score levels. Must have at most 10 levels."
     r = client.post("/v1/systemone", json={"state": "x", "model": "gpt-4", "questions": {"a": {"type": "noul"}}})
-    assert r.status_code == 404 and r.json()["detail"]["error_type"] == "not_found_error"
+    assert r.status_code == 400 and r.json()["detail"] == {"error_type": "api_usage_error", "message": "Unknown model: gpt-4"}
 
 
 def test_auth(tok, monkeypatch):
@@ -177,7 +178,7 @@ def test_image_validation(client):
                            ([{"content_type": "image/png", "base64": "not base64!"}], "base64"),
                            ([f"data:image/png;base64,{PNG}"] * 9, "at most 8")]:
         r = client.post("/v1/systemone", json=dict(EXAMPLE, images=images))
-        assert r.status_code == 422 and needle in r.json()["detail"][0]["msg"], (images, r.text)
+        assert r.status_code == 400 and needle in r.json()["detail"], (images, r.text)
 
 
 def test_options_default_to_jevs_behaviour(client):
@@ -226,9 +227,8 @@ def test_sequential_prefills_earlier_answers(tok, client):
 def test_think_and_sequential_need_text(client):
     for opt in ({"think": 64}, {"sequential": True}):
         r = client.post("/v1/systemone", json=dict(EXAMPLE, images=[f"data:image/png;base64,{PNG}"], **opt))
-        err = r.json()["detail"][0]
-        assert r.status_code == 422 and "text state" in err["msg"]
-        assert err["loc"] == ["body", next(iter(opt))]
+        assert r.status_code == 400 and "text state" in r.json()["detail"]
+        assert r.json()["detail"].startswith(next(iter(opt)))  # which option was at fault
 
 
 def chat_client(tok, handler, **settings):
@@ -242,8 +242,6 @@ def chat_client(tok, handler, **settings):
 
 
 def test_chat_normalizes_jev_ultrafast_request(tok):
-    import json as _json
-
     sent = []
 
     def handler(request):
@@ -267,6 +265,66 @@ def test_chat_normalizes_jev_ultrafast_request(tok):
     assert out["model"] == "diffusiongemma-26b"
     assert _json.loads(out["choices"][0]["message"]["content"]) == {"text": "Zurich"}
     assert c.post("/v1/chat/completions", json=dict(body, model="gpt-4")).status_code == 404
+
+
+def test_single_option_choice_is_answered_without_a_read(client):
+    """Jev sets no minimum on a choice's options; one option has one answer."""
+    body = dict(EXAMPLE, questions={"only": {"type": "choice", "instructions": "Which team",
+                                             "criteria": {"billing": "anything at all"}}})
+    r = client.post("/v1/systemone", json=body)
+    assert r.status_code == 200, r.text
+    a = r.json()["answers"]["only"]
+    assert a == {"type": "choice", "choice": "billing", "probabilities": {"billing": 1.0}, "confidence": 1.0}
+    assert client.reads == []  # the model was never asked
+    assert r.json()["usage"]["input_tokens"] == 0
+
+
+def test_single_option_choice_alongside_read_questions(client):
+    qs = dict(EXAMPLE["questions"], only={"type": "choice", "instructions": "Which team", "criteria": {"billing": None}})
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, questions=qs))
+    assert r.status_code == 200, r.text
+    answers = r.json()["answers"]
+    assert list(answers) == list(qs)  # answered in the order asked
+    assert answers["only"]["choice"] == "billing"
+    assert answers["department"]["type"] == "choice" and client.reads  # the rest still went to the model
+
+
+def test_single_level_score_is_answered_without_a_read(client):
+    """Jev answers a one-level score with 0 at probability 1; it used to be a 422 here."""
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, questions={"only": {"type": "score", "instructions": "How bad", "criteria": ["fine"]}}))
+    assert r.status_code == 200, r.text
+    assert r.json()["answers"]["only"] == {"type": "score", "score": 0.0, "legend": {"0": "fine"},
+                                           "probabilities": {"0": 1.0}, "confidence": 1.0}
+    assert client.reads == []
+
+
+def test_choice_needs_an_option(client):
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, questions={"q": {"type": "choice", "instructions": "x", "criteria": {}}}))
+    assert r.status_code == 400 and r.json()["detail"] == "Choice question must have at least one choice: q"
+
+
+def test_deeply_nested_body_is_rejected_not_crashed(client):
+    """A thousand levels of nesting used to blow the stack while the 422 was encoded."""
+    deep = {"a": None}
+    for _ in range(1000):
+        deep = {"a": deep}
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, questions={"q": deep}))
+    assert r.status_code == 422
+    detail = r.json()["detail"][0]
+    assert detail["loc"] == ["body", "questions", "q"]
+    assert "..." in _json.dumps(detail["input"])  # the offending value is trimmed, not echoed whole
+
+
+def test_invalid_requests_are_logged_without_their_body(client, caplog):
+    import logging
+
+    with caplog.at_level(logging.WARNING, logger="openjev"):
+        client.post("/v1/systemone", json=dict(EXAMPLE, questions={"q": {"type": "nope", "instructions": "x"}}))
+        client.post("/v1/systemone", json=dict(EXAMPLE, questions={"q": {"type": "score", "instructions": "x", "criteria": [f"l{i}" for i in range(11)]}}))
+    logged = [r.getMessage() for r in caplog.records]
+    assert any("questions.q" in m and "tag" in m for m in logged)
+    assert any("at most 10 levels" in m for m in logged)
+    assert not any("Stripe" in m for m in logged)  # never the state
 
 
 def test_chat_passes_upstream_errors(tok):

@@ -11,12 +11,14 @@ import binascii
 import hashlib
 import hmac
 import json
+import logging
 import secrets
 from contextlib import asynccontextmanager
 from typing import Annotated, Any, Literal, Union
 
 import httpx
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
@@ -48,7 +50,8 @@ class ChoiceQuestion(BaseModel):
 class ScoreQuestion(BaseModel):
     type: Literal["score"]
     instructions: Described = None
-    criteria: list[JSONContent]
+    # one level is a valid score with one possible answer, as on Jev
+    criteria: list[JSONContent] = Field(min_length=1)
 
 
 Question = Annotated[Union[NoulQuestion, ChoiceQuestion, ScoreQuestion], Field(discriminator="type")]
@@ -104,8 +107,42 @@ def error(status, error_type, message, headers=None):
     return JSONResponse({"detail": {"error_type": error_type, "message": message}}, status_code=status, headers=headers)
 
 
-def validation_error(loc, msg, value=None):
-    return JSONResponse({"detail": [{"type": "value_error", "loc": loc, "msg": msg, "input": value}]}, status_code=422)
+log = logging.getLogger("openjev")
+
+# A rejected body is never logged: only where it was wrong and why, so common client
+# mistakes are visible without keeping anyone's data.
+def log_invalid(request, parts):
+    log.warning("422 %s %s", getattr(request.state, "request_id", "-"), "; ".join(parts) or "invalid request")
+
+
+# depth and width a rejected value is echoed to, so encoding it can't run away
+TRIM_DEPTH, TRIM_ITEMS, TRIM_CHARS = 4, 20, 500
+
+
+def trim(value, depth=0):
+    """A value safe to echo in an error: deep or long parts become a placeholder."""
+    if isinstance(value, str):
+        return value if len(value) <= TRIM_CHARS else value[:TRIM_CHARS] + "..."
+    if isinstance(value, (dict, list)):
+        if depth >= TRIM_DEPTH:
+            return "..."
+        if isinstance(value, dict):
+            out = {str(k): trim(v, depth + 1) for k, v in list(value.items())[:TRIM_ITEMS]}
+            if len(value) > TRIM_ITEMS:
+                out["..."] = f"{len(value) - TRIM_ITEMS} more"
+            return out
+        return [trim(v, depth + 1) for v in value[:TRIM_ITEMS]] + (["..."] if len(value) > TRIM_ITEMS else [])
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+    return str(value)[:TRIM_CHARS]
+
+
+def semantic_error(loc, msg, request=None):
+    """A request whose shape is fine but whose meaning isn't, in Jev's shape: 400 with a
+    plain-string detail. Field-level problems stay 422 with a list (see invalid_body)."""
+    if request is not None:
+        log_invalid(request, [f"{'.'.join(str(p) for p in loc)}: {msg}"])
+    return JSONResponse({"detail": msg}, status_code=400)
 
 
 def create_app(settings=None, tokenizer=None):
@@ -124,6 +161,26 @@ def create_app(settings=None, tokenizer=None):
         await app.state.generator.close()
 
     app = FastAPI(title="OpenJev", version="0.2.0", lifespan=lifespan)
+
+    @app.exception_handler(RequestValidationError)
+    async def invalid_body(request: Request, exc: RequestValidationError):
+        """Jev's 422 shape, with the reason logged. The offending value is trimmed: a
+        deeply nested body used to exhaust the stack while the error was encoded."""
+        if any(e.get("type") == "union_tag_invalid" for e in exc.errors()):
+            # an unknown question type, which Jev answers generically
+            log_invalid(request, [f"{'.'.join(str(p) for p in e.get('loc', ()))}: {e.get('type')}" for e in exc.errors()])
+            return error(400, "api_usage_error", "Invalid request.")
+        errors = []
+        for e in exc.errors():
+            out = {"type": e.get("type"), "loc": list(e.get("loc", ())), "msg": e.get("msg"), "input": trim(e.get("input"))}
+            for extra in ("ctx", "url"):  # keep what FastAPI's own handler sends
+                if extra in e:
+                    out[extra] = trim(e[extra])
+            errors.append(out)
+        log_invalid(request, [f"{'.'.join(str(p) for p in e['loc'])}: {e['type']}" for e in errors])
+        rid = getattr(request.state, "request_id", None)
+        return JSONResponse({"detail": errors}, status_code=422,
+                            headers={"x-typesafe-request-id": rid, "x-request-id": rid} if rid else None)
 
     @app.middleware("http")
     async def request_id_and_auth(request: Request, call_next):
@@ -151,7 +208,8 @@ def create_app(settings=None, tokenizer=None):
     @app.post("/v1/systemone")
     async def systemone(req: SystemOneRequest, request: Request):
         if req.model not in MODEL_ALIASES:
-            return error(404, "not_found_error", f"Model {req.model!r} not found. Available: openjev-latest.")
+            # Jev's shape for a model it doesn't serve
+            return error(400, "api_usage_error", f"Unknown model: {req.model}")
         questions = {k: q.model_dump() for k, q in req.questions.items()}
         options = {"steps": req.steps, "samples": req.samples, "think": req.think, "sequential": req.sequential}
         engine = request.app.state.engine
@@ -162,9 +220,9 @@ def create_app(settings=None, tokenizer=None):
             seed = int.from_bytes(hashlib.sha256(json.dumps(key, sort_keys=True).encode()).digest()[:4], "big")
             answers, input_tokens, thought_tokens = await engine.decide(questions, req.state, seed, images, options)
         except SchemaError as e:
-            return validation_error(e.loc, str(e))
+            return semantic_error(e.loc, str(e), request=request)
         except Upstream as e:
-            return validation_error(["body"], f"the model rejected this request: {e}")
+            return semantic_error(["body"], f"the model rejected this request: {e}", request=request)
         except Overloaded as e:
             return error(529, "overloaded_error", str(e), {"retry-after": "1"})
         except httpx.HTTPError as e:

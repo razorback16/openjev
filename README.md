@@ -70,11 +70,18 @@ Question types:
 `confidence` is `1 − H(p)/ln K`. It is 1 when the model is certain and 0 when the distribution is uniform.
 `usage.input_tokens` counts prompt tokens, including image tokens. `usage.output_tokens` is 0
 unless `think` is set (below). Errors follow the
-same shapes as Jev: FastAPI `422` validation lists, `{"detail": {"error_type", "message"}}` for
-auth errors (`401`/`403`), `429`, and `529` when overloaded.
+same shapes as Jev, checked against the live API: FastAPI `422` validation lists for a field of the
+wrong shape, `400` with the reason as plain text for a question that cannot be asked (no options,
+too many options or score levels), `400` `api_usage_error` for an unknown model or question type,
+`{"detail": {"error_type", "message"}}` for auth errors (`401`/`403`), `429`, and `529` when overloaded.
 
 Known differences from Jev:
-- A choice can have at most 128 options (Jev allows 255).
+- A choice can have at most 128 options (Jev allows 255); the refusal reads the same.
+- Model names are OpenJev's own; `jev-latest` and `jev-preview` are aliases, and a pinned Jev version
+  such as `jev-1.13.0` answers `400` `Unknown model`.
+- A choice with one option, or a score with one level, is answered directly (probability 1) without a
+  read, so it bills no tokens. Jev answers the same values and bills for the read.
+- A body nested a thousand levels deep answers `422`; Jev answers `500`.
 - Many questions are answered in chunks of about 12 per read. They are still answered in parallel.
 
 ### Extensions
@@ -100,7 +107,7 @@ curl https://api.codiv.ai/v1/systemone \
 ```
 
 `think` and `sequential` need a text state, so they cannot be combined with `images` (the request
-gets a 422).
+gets a 400).
 
 ### Text generation
 

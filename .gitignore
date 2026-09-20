@@ -5,3 +5,7 @@ dl.log
 __pycache__/
 *.egg-info/
 .env
+
+# agent skills and local agent config, not part of the server
+.agents/
+.claude/
