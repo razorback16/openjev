@@ -1,0 +1,25 @@
+{
+  "independent_builds": 2,
+  "byte_identical_jsonl": true,
+  "files": {
+    "train.jsonl": {
+      "records": 75551,
+      "bytes": 108953772,
+      "sha256": "37bfb315d8524407fa8a027a99f192c64f9b131c0585611acfeaede4ae39e3c3"
+    },
+    "validation.jsonl": {
+      "records": 3826,
+      "bytes": 5647957,
+      "sha256": "19ce796531620de91e99cf8c3f8500a92213d3f27b0dfc90763b22827fb1f99e"
+    },
+    "calibration.jsonl": {
+      "records": 3879,
+      "bytes": 5696118,
+      "sha256": "f16eaab46a072cf319e306c9c3a6e36977629bb10f44185fb93729ccc4eef962"
+    }
+  },
+  "tests": {
+    "passed": 26,
+    "failed": 0
+  }
+}

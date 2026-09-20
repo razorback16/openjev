@@ -1,0 +1,52 @@
+{
+  "version": "openjev-holdem-v1",
+  "seed": 20260920,
+  "records": 15000,
+  "unique_board_groups": 9738,
+  "river_generation_attempts": 1288,
+  "subtasks": {
+    "hand_category": 4000,
+    "category_improvement_outs": 3000,
+    "showdown_equity": 3000,
+    "restricted_river_strategy": 5000
+  },
+  "versions": {
+    "treys": "0.1.8",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "pyarrow": "25.0.1"
+  },
+  "compiler_sha256": "b6de34497c4ae32fe242dd6b3cfd99993a13cb9d06c778bfff2a3ca8d0caa10f",
+  "splits": {
+    "train": {
+      "records": 13623,
+      "sha256": "5bfdd82ca070f40ea25ace6e90b5714c7fa497a174c4ebce74a550c1aeedd4b9",
+      "subtasks": {
+        "hand_category": 3588,
+        "restricted_river_strategy": 4592,
+        "showdown_equity": 2706,
+        "category_improvement_outs": 2737
+      }
+    },
+    "validation": {
+      "records": 635,
+      "sha256": "f25bdb807286209656c0a98ef6cfc064829eb9e4c93b6c837a85449226f3ab9b",
+      "subtasks": {
+        "hand_category": 187,
+        "category_improvement_outs": 130,
+        "showdown_equity": 142,
+        "restricted_river_strategy": 176
+      }
+    },
+    "calibration": {
+      "records": 742,
+      "sha256": "a4baea727db64344f09f889b0368a487a9f8634d27f9be093a7499fb5c9564fe",
+      "subtasks": {
+        "showdown_equity": 152,
+        "category_improvement_outs": 133,
+        "restricted_river_strategy": 232,
+        "hand_category": 225
+      }
+    }
+  }
+}

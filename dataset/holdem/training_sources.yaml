@@ -1,0 +1,19 @@
+version: openjev-holdem-v1
+license: Apache-2.0
+seed: 20260920
+source: deterministic_procedural_generation
+external_dataset_inputs: []
+tasks:
+  hand_category: {records: 4000, teacher: exact_seven_card_evaluation}
+  category_improvement_outs: {records: 3000, teacher: exact_46_card_enumeration}
+  showdown_equity: {records: 3000, teacher: exact_joint_hand_runout_enumeration}
+  restricted_river_strategy:
+    records: 5000
+    subgames: 625
+    hands_per_player_range: 4
+    teacher: zero_sum_linear_programs
+    independent_audit: exhaustive_16_by_16_normal_form
+    maximum_best_response_gap_chips: 0.0000001
+    scope: single_all_in_bet_no_raise_check_ends_showdown
+    confidence_calibration: exclude
+# Documents v1 defaults enforced by the compiler; not a runtime configuration.

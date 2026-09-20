@@ -1,0 +1,96 @@
+{
+  "splits": {
+    "train": {
+      "records": 1425,
+      "groups": 593,
+      "response_tokens": 793505,
+      "sha256": "6037a2a53386383ed70cb3c8c712659164bf41b80acbde39377bd24c8017beed"
+    },
+    "validation": {
+      "records": 163,
+      "groups": 66,
+      "response_tokens": 78536,
+      "sha256": "8366ecfa898f4f56211c23ade48ea2a34dedcccf5b0781ad2cc1dc39cc8ed054"
+    }
+  },
+  "counts": {
+    "validation:instruction:nonthinking": 20,
+    "validation:instruction:thinking": 15,
+    "train:instruction:nonthinking": 237,
+    "train:instruction:thinking": 177,
+    "train:tools:nonthinking": 276,
+    "train:tools:thinking": 166,
+    "validation:tools:nonthinking": 30,
+    "validation:tools:thinking": 18,
+    "train:interactive:nonthinking": 313,
+    "train:interactive:thinking": 178,
+    "validation:interactive:nonthinking": 44,
+    "validation:interactive:thinking": 28,
+    "train:search:nonthinking": 39,
+    "train:search:thinking": 39,
+    "validation:search:nonthinking": 4,
+    "validation:search:thinking": 4
+  },
+  "rejected": {
+    "chat:invalid_or_withheld": 164,
+    "instruction:length": 71,
+    "tools:template_prefix_mismatch": 149,
+    "tools:length": 22,
+    "tools:missing_reasoning": 3,
+    "interactive:template_prefix_mismatch": 151,
+    "search:length": 43,
+    "search:template_prefix_mismatch": 43
+  },
+  "sources": [
+    {
+      "repo": "nvidia/Nemotron-SFT-Instruction-Following-Chat-v3",
+      "revision": "be3b3e04ef605ac9d3f8f35b9d5a632f4a3a3402",
+      "file": "data/chat.jsonl",
+      "sampling": "complete lines in first bounded bytes",
+      "bytes": 4150405,
+      "sha256": "aea18600cf1aba99b09a4cb4046fa9f3d8b9e0f297e727a6a54dd0c9f27152fc"
+    },
+    {
+      "repo": "nvidia/Nemotron-SFT-Instruction-Following-Chat-v3",
+      "revision": "be3b3e04ef605ac9d3f8f35b9d5a632f4a3a3402",
+      "file": "data/instruction_following.jsonl",
+      "sampling": "complete lines in first bounded bytes",
+      "bytes": 4167689,
+      "sha256": "20bae52c96f7539e768ffe8f42e06083078e38e636dab8ad58566b9b7574ce0c"
+    },
+    {
+      "repo": "nvidia/Nemotron-SFT-Agentic-v2",
+      "revision": "7c804833427f633ccd53b582dbf02525fd680f78",
+      "file": "data/tool_calling.jsonl",
+      "sampling": "complete lines in first bounded bytes",
+      "bytes": 4181128,
+      "sha256": "47aa65fe8686f70ff98c28c5320e648587cf393676833f84c6ed1c01522b9fc9"
+    },
+    {
+      "repo": "nvidia/Nemotron-SFT-Agentic-v2",
+      "revision": "7c804833427f633ccd53b582dbf02525fd680f78",
+      "file": "data/interactive_agent.jsonl",
+      "sampling": "complete lines in first bounded bytes",
+      "bytes": 4168728,
+      "sha256": "4c1658fbf9471402be06f4fa3716351e0dbf107cfa284f881b256ccbdce35795"
+    },
+    {
+      "repo": "nvidia/Nemotron-SFT-Agentic-v2",
+      "revision": "7c804833427f633ccd53b582dbf02525fd680f78",
+      "file": "data/search.jsonl",
+      "sampling": "complete lines in first bounded bytes",
+      "bytes": 4165126,
+      "sha256": "8237ea9ebb37e45abb22ace94d5817c331920953efe1e117d9d0b6888b306751"
+    }
+  ],
+  "seed": 20260920,
+  "tokenizer": "google/diffusiongemma-26B-A4B-it",
+  "tokenizer_revision": "f7f5b7f5fa82ffc52addd066915886d497f5517b",
+  "standard_system_prompt": null,
+  "template_sha256": "9aeb7eac68ad87bba7567e9d4597ff203e5609f1b427d9e823437d0142cc61bf",
+  "limits": {
+    "max_prompt": 8192,
+    "max_response": 4096
+  },
+  "limitations": "Bounded prefix pilot, not representative corpus sampling. Tool outcomes are supplied context, never executed. No retention quality claim."
+}

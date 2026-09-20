@@ -9,6 +9,11 @@ dependencies = ["fastapi>=0.115", "uvicorn[standard]>=0.30", "httpx>=0.27", "tra
 
 [project.optional-dependencies]
 test = ["pytest", "typesafe-sdk>=0.6", "msgspec"]
+data = ["pyarrow>=18", "pyyaml>=6", "datasketch>=1.6"]
+games = ["open-spiel==2.0.2", "numpy>=2", "pyarrow>=18", "zstandard>=0.25"]
+holdem = ["treys==0.1.8", "numpy>=2", "scipy>=1.14", "pyarrow>=18"]
+vision-data = ["Pillow>=11", "numpy>=2", "requests>=2.32"]
+training-data = ["pyarrow>=18", "python-dotenv>=1", "requests>=2.32", "huggingface-hub>=1", "transformers>=5.17"]
 
 [project.urls]
 Homepage = "https://codiv.ai"

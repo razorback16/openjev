@@ -1,0 +1,6 @@
+{
+  "records": 10000,
+  "evaluation_jsonl_sha256": "0baa637cfce302fe93ef4081119183a4714a73ae23b4babf3faaf467fbda3c6f",
+  "image_manifest_sha256": "8407bcb1c2e30c539564550ddbdae88cc8f93a10ab0e6ef3743fedda1bcbd6d8",
+  "rule": "Do not use evaluation records, their underlying parent states, or alternate renders for training or calibration."
+}

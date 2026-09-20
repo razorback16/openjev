@@ -1,0 +1,569 @@
+{
+  "version": 1,
+  "files": [
+    {
+      "path": "banking_categories.json",
+      "url": "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/categories.json",
+      "bytes": 2036,
+      "sha256": "53261da888122daf2d120d925458631d9619e15d82e56052e7a42e535ce32b63"
+    },
+    {
+      "path": "banking_test.csv",
+      "url": "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/test.csv",
+      "bytes": 239961,
+      "sha256": "d12d6e3bc4c3103966ae786dc435913c0c563dfa328f5a3646d0e62cfeeb474d"
+    },
+    {
+      "path": "banking_train.csv",
+      "url": "https://raw.githubusercontent.com/PolyAI-LDN/task-specific-datasets/master/banking_data/train.csv",
+      "bytes": 839073,
+      "sha256": "b06e26ac675513959a63135f11b94ea7786ed02da65db93a5650d8838cbc664b"
+    },
+    {
+      "path": "cosmos_test.jsonl",
+      "url": "https://raw.githubusercontent.com/wilburOne/cosmosqa/b6eb99cca4e2a51dd28a9a6f562534872d851639/data/test.jsonl",
+      "bytes": 5610681,
+      "sha256": "70005196dc2588b95de34f1657b25e2c1a4810cfe55b5bb0c0e15580c37b3ed0"
+    },
+    {
+      "path": "cosmos_train.csv",
+      "url": "https://raw.githubusercontent.com/wilburOne/cosmosqa/b6eb99cca4e2a51dd28a9a6f562534872d851639/data/train.csv",
+      "bytes": 16660449,
+      "sha256": "d8d5ca1f9f6534b6530550718591af89372d976a8fc419360fab4158dee4d0b2"
+    },
+    {
+      "path": "cosmos_valid.csv",
+      "url": "https://raw.githubusercontent.com/wilburOne/cosmosqa/b6eb99cca4e2a51dd28a9a6f562534872d851639/data/valid.csv",
+      "bytes": 2128345,
+      "sha256": "a6a94fc1463ca82bb10f98ef68ed535405e6f5c36e044ff8e136b5c19dea63f3"
+    },
+    {
+      "path": "flan_train-00000-of-00005.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/flan/resolve/f179102f62b22f9992b6c3ca7dc9d5431b1326db/data/train-00000-of-00005.parquet",
+      "bytes": 236541023,
+      "sha256": "e9df754ba7a5f39d4ba69098cb639fa304e78d65302797f640a56a98f38de549"
+    },
+    {
+      "path": "flan_train-00001-of-00005.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/flan/resolve/f179102f62b22f9992b6c3ca7dc9d5431b1326db/data/train-00001-of-00005.parquet",
+      "bytes": 235272551,
+      "sha256": "c8fa1eefee7885cb2cfcdcd3f1f0871cfb2163a2fe28237b44126de5157a10f1"
+    },
+    {
+      "path": "flan_train-00002-of-00005.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/flan/resolve/f179102f62b22f9992b6c3ca7dc9d5431b1326db/data/train-00002-of-00005.parquet",
+      "bytes": 235840495,
+      "sha256": "aa3bf627f7801422a5a3ff3fab194688879c2bad962b6645b2ecfddd1ff96b42"
+    },
+    {
+      "path": "flan_train-00003-of-00005.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/flan/resolve/f179102f62b22f9992b6c3ca7dc9d5431b1326db/data/train-00003-of-00005.parquet",
+      "bytes": 236880055,
+      "sha256": "732f83e3bbe7450de0d2f1c4c8593ca7752e479223934b3cd43aa1a58921835e"
+    },
+    {
+      "path": "flan_train-00004-of-00005.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/flan/resolve/f179102f62b22f9992b6c3ca7dc9d5431b1326db/data/train-00004-of-00005.parquet",
+      "bytes": 236143344,
+      "sha256": "eecfd2268ccae5138537d7150fb17276ef9bd93cb67e7a0c31a0ccf55fff62a9"
+    },
+    {
+      "path": "goemotions_1.csv",
+      "url": "https://storage.googleapis.com/gresearch/goemotions/data/full_dataset/goemotions_1.csv",
+      "bytes": 14174600,
+      "sha256": "cac049036bad5d68d1081f72b65f2cc51e4df82af05e3e22cfa747051cac1af3"
+    },
+    {
+      "path": "goemotions_2.csv",
+      "url": "https://storage.googleapis.com/gresearch/goemotions/data/full_dataset/goemotions_2.csv",
+      "bytes": 14173154,
+      "sha256": "f699ecc5aa425c1720c1d02475f1e41815244b680bd75b282eb770d2c76cd84d"
+    },
+    {
+      "path": "goemotions_3.csv",
+      "url": "https://storage.googleapis.com/gresearch/goemotions/data/full_dataset/goemotions_3.csv",
+      "bytes": 14395164,
+      "sha256": "467f1e7191af00f2e76cc7f425885c2dc304bea8aff284b10e8c460d22f2e1af"
+    },
+    {
+      "path": "goemotions_dev.tsv",
+      "url": "https://raw.githubusercontent.com/google-research/google-research/master/goemotions/data/dev.tsv",
+      "bytes": 439059,
+      "sha256": "575489c079c9de1097062a01738f998590d6b7ead66dd1c9fd1d2ba01fd8bc62"
+    },
+    {
+      "path": "goemotions_test.tsv",
+      "url": "https://raw.githubusercontent.com/google-research/google-research/master/goemotions/data/test.tsv",
+      "bytes": 436706,
+      "sha256": "0587b2dd8b27b97352adbfc3fb083d46005c8946657fdc2b1ca8b1cc7f1f8be4"
+    },
+    {
+      "path": "goemotions_train.tsv",
+      "url": "https://raw.githubusercontent.com/google-research/google-research/master/goemotions/data/train.tsv",
+      "bytes": 3519053,
+      "sha256": "1c254a142be5c00e80d819b9ae1bbd36d94b2eeb8f4b1271846508d57e57d9c5"
+    },
+    {
+      "path": "helpsteer_train.jsonl.gz",
+      "url": "https://huggingface.co/datasets/nvidia/HelpSteer/resolve/3ca5d59c1bc1080af195b4254e7407db60b6f450/train.jsonl.gz",
+      "bytes": 15853406,
+      "sha256": "f0fa6f240622691ee2f2e9777f7d3dacf1b9f035223e6edf611dd4278a5cf519"
+    },
+    {
+      "path": "helpsteer_validation.jsonl.gz",
+      "url": "https://huggingface.co/datasets/nvidia/HelpSteer/resolve/3ca5d59c1bc1080af195b4254e7407db60b6f450/validation.jsonl.gz",
+      "bytes": 813347,
+      "sha256": "5dd705a443e4973a37d4e384271dc325e329f34966ddc3dbd06cd459ebad947e"
+    },
+    {
+      "path": "native/WANLI/test.jsonl",
+      "url": "https://huggingface.co/datasets/alisawuffles/WANLI/resolve/61c95318fd71c55b6ba355d76253254615f387ec/test.jsonl",
+      "bytes": 1233111,
+      "sha256": "4276e0af7fcdf657d1ab7beb54eaf025fda592a76c9ee86b63b7871953fc74fd"
+    },
+    {
+      "path": "native/WANLI/train.jsonl",
+      "url": "https://huggingface.co/datasets/alisawuffles/WANLI/resolve/61c95318fd71c55b6ba355d76253254615f387ec/train.jsonl",
+      "bytes": 25438383,
+      "sha256": "85058cf017a911e89242dc29fa0a4ddaad3664cb923dc0a82145fdda14b694e5"
+    },
+    {
+      "path": "native/babi_nli/agents-motivations__test-00000-of-00001-c1f90457b34ded4b.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/agents-motivations/test-00000-of-00001-c1f90457b34ded4b.parquet",
+      "bytes": 22623,
+      "sha256": "8fc8be0c5a4dbad7d1d2d6ea90116943c6371d7037f09fa75ad4873dbb8c7d8d"
+    },
+    {
+      "path": "native/babi_nli/agents-motivations__train-00000-of-00001-ce27641c639ce228.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/agents-motivations/train-00000-of-00001-ce27641c639ce228.parquet",
+      "bytes": 35474,
+      "sha256": "5659f84b0f4d519f859df523e105acde9571eb343183130dad32d2722333b824"
+    },
+    {
+      "path": "native/babi_nli/agents-motivations__validation-00000-of-00001-5d76fbf6ef04e7cb.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/agents-motivations/validation-00000-of-00001-5d76fbf6ef04e7cb.parquet",
+      "bytes": 21606,
+      "sha256": "b05d81b1d85c4fd19b79634d19f4b9a8ab563e5451a63688f1c66cafa6dd81b7"
+    },
+    {
+      "path": "native/babi_nli/basic-coreference__test-00000-of-00001-ce5d154ba3c692d2.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-coreference/test-00000-of-00001-ce5d154ba3c692d2.parquet",
+      "bytes": 26954,
+      "sha256": "be72d21a5c226886d643bdafc58e0ab45e6a794a4ba27708fb1007f3fa9172f3"
+    },
+    {
+      "path": "native/babi_nli/basic-coreference__train-00000-of-00001-6caa9b752f19fb45.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-coreference/train-00000-of-00001-6caa9b752f19fb45.parquet",
+      "bytes": 44363,
+      "sha256": "6aaf5d326cd0340e4d744e9a3c8a48d9d4d3371b0e8b324f42f7b2e7e549bd78"
+    },
+    {
+      "path": "native/babi_nli/basic-coreference__validation-00000-of-00001-1eb94b1b633d63d9.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-coreference/validation-00000-of-00001-1eb94b1b633d63d9.parquet",
+      "bytes": 27086,
+      "sha256": "466dd40a425cae23bc17750e017f87e330a3c3e3d3e2a2dddb5b1a2f5714aba2"
+    },
+    {
+      "path": "native/babi_nli/basic-deduction__test-00000-of-00001-c669b8101ae16c22.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-deduction/test-00000-of-00001-c669b8101ae16c22.parquet",
+      "bytes": 15072,
+      "sha256": "70a2ded45420c89d97d13d29b3d1037e7c9dd1d07d2080eda6fa097fe4e0b3a5"
+    },
+    {
+      "path": "native/babi_nli/basic-deduction__train-00000-of-00001-e45b0345e6bde5a3.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-deduction/train-00000-of-00001-e45b0345e6bde5a3.parquet",
+      "bytes": 19141,
+      "sha256": "6d4f9f56a68efea6de3ed9df7e9752dc17edb6ecd30b4f18669ec04ac42fe268"
+    },
+    {
+      "path": "native/babi_nli/basic-deduction__validation-00000-of-00001-1eaa093173accd0c.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-deduction/validation-00000-of-00001-1eaa093173accd0c.parquet",
+      "bytes": 14810,
+      "sha256": "e761d009ff36d9178588d6d087bfe51f070dd1a96caed80f75e22f01ba2d265d"
+    },
+    {
+      "path": "native/babi_nli/basic-induction__test-00000-of-00001-1d9d7076b3cb6b66.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-induction/test-00000-of-00001-1d9d7076b3cb6b66.parquet",
+      "bytes": 23505,
+      "sha256": "7550c8cc101cf1562a95b7ac722f7da46a4ac07c694163c97dd2bdef1e596ee2"
+    },
+    {
+      "path": "native/babi_nli/basic-induction__train-00000-of-00001-e4f63ffe92e2fa74.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-induction/train-00000-of-00001-e4f63ffe92e2fa74.parquet",
+      "bytes": 38701,
+      "sha256": "743e3cc01ed02ec955aed476928b93c216edb1b083254550350c3641d3c2334a"
+    },
+    {
+      "path": "native/babi_nli/basic-induction__validation-00000-of-00001-b4ca97bd31543496.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/basic-induction/validation-00000-of-00001-b4ca97bd31543496.parquet",
+      "bytes": 22947,
+      "sha256": "54829f5ec633d6585dafd66c65eedd61ef053771a101caf67b4c1de0431857c1"
+    },
+    {
+      "path": "native/babi_nli/compound-coreference__test-00000-of-00001-af343c53d8191d62.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/compound-coreference/test-00000-of-00001-af343c53d8191d62.parquet",
+      "bytes": 30511,
+      "sha256": "36767de126ab755a46a2f6b922ca4ab61bdddc39303e9f4b677b1aacf1f3c13a"
+    },
+    {
+      "path": "native/babi_nli/compound-coreference__train-00000-of-00001-eed73d0910fe58e5.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/compound-coreference/train-00000-of-00001-eed73d0910fe58e5.parquet",
+      "bytes": 49801,
+      "sha256": "0ccf230d6d186208b87bbbeb7057867278b4938c390953e7c232ceea58d24921"
+    },
+    {
+      "path": "native/babi_nli/compound-coreference__validation-00000-of-00001-39630f61412e8dce.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/compound-coreference/validation-00000-of-00001-39630f61412e8dce.parquet",
+      "bytes": 29382,
+      "sha256": "69676a48b402fea61a45e500bb1a2db9513b4a8b60d2e03fcb43caf7e0257d77"
+    },
+    {
+      "path": "native/babi_nli/conjunction__test-00000-of-00001-c2db8cd3da908a65.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/conjunction/test-00000-of-00001-c2db8cd3da908a65.parquet",
+      "bytes": 32527,
+      "sha256": "01b85b0920a0c395e441880a52310458486d4198212353a69cc7832f82ab658d"
+    },
+    {
+      "path": "native/babi_nli/conjunction__train-00000-of-00001-dac9e44f4d585ba2.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/conjunction/train-00000-of-00001-dac9e44f4d585ba2.parquet",
+      "bytes": 53701,
+      "sha256": "e73a046e76706cc087452a0932aac7fa017d2a41ba0639895d62838df8992ae5"
+    },
+    {
+      "path": "native/babi_nli/conjunction__validation-00000-of-00001-97b8d508a06632dc.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/conjunction/validation-00000-of-00001-97b8d508a06632dc.parquet",
+      "bytes": 32476,
+      "sha256": "b9de123f1aa96ad49bf80dcbd9f3ab83577f15e622275eaf2505d7bf237fe912"
+    },
+    {
+      "path": "native/babi_nli/counting__test-00000-of-00001-b2fc7dfbff9ccf3c.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/counting/test-00000-of-00001-b2fc7dfbff9ccf3c.parquet",
+      "bytes": 31113,
+      "sha256": "5ba0f3a48c9330deec19461994642e2e47f9979e8a8075ab426b43684858541a"
+    },
+    {
+      "path": "native/babi_nli/counting__train-00000-of-00001-2ef57f491f212fe5.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/counting/train-00000-of-00001-2ef57f491f212fe5.parquet",
+      "bytes": 56469,
+      "sha256": "ec328ca9f882ab873fab8089ea61d291ac5ea80d7553a58b9eaf09fdb6676f99"
+    },
+    {
+      "path": "native/babi_nli/counting__validation-00000-of-00001-6bb903d2c48a371a.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/counting/validation-00000-of-00001-6bb903d2c48a371a.parquet",
+      "bytes": 31440,
+      "sha256": "ef77421fedba5c184ceb6ea270e41b72b24f616c5da797b75cdd5fbd126913f3"
+    },
+    {
+      "path": "native/babi_nli/indefinite-knowledge__test-00000-of-00001-f264eaea9b044762.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/indefinite-knowledge/test-00000-of-00001-f264eaea9b044762.parquet",
+      "bytes": 29576,
+      "sha256": "5c5b978f00c5c1cf9adeeecb0857eed960ddea515edccf400abc2655cd86db4f"
+    },
+    {
+      "path": "native/babi_nli/indefinite-knowledge__train-00000-of-00001-eef7a05301d5dffa.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/indefinite-knowledge/train-00000-of-00001-eef7a05301d5dffa.parquet",
+      "bytes": 37611,
+      "sha256": "6b938fdee1a3515f1b21613e91bff7734c61b2366291c57d4ff26797fb911938"
+    },
+    {
+      "path": "native/babi_nli/indefinite-knowledge__validation-00000-of-00001-0c9a3ba9bb85b45b.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/indefinite-knowledge/validation-00000-of-00001-0c9a3ba9bb85b45b.parquet",
+      "bytes": 29065,
+      "sha256": "e829c0ba9dcb7598c5cb77a909b5b28625acb47934a2b95e54023ad304c99d54"
+    },
+    {
+      "path": "native/babi_nli/lists-sets__test-00000-of-00001-55f3310384f721b1.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/lists-sets/test-00000-of-00001-55f3310384f721b1.parquet",
+      "bytes": 32363,
+      "sha256": "786da5afe0681c72f5a933fbcec67c0e329661e6aa31fd718b0e80c0d7546ef4"
+    },
+    {
+      "path": "native/babi_nli/lists-sets__train-00000-of-00001-d5034df96de81a61.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/lists-sets/train-00000-of-00001-d5034df96de81a61.parquet",
+      "bytes": 54477,
+      "sha256": "01511d6ccb52375fa331204562591a14622397e74f181366838e799a15e4b001"
+    },
+    {
+      "path": "native/babi_nli/lists-sets__validation-00000-of-00001-b8519360bb5bd61e.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/lists-sets/validation-00000-of-00001-b8519360bb5bd61e.parquet",
+      "bytes": 32479,
+      "sha256": "9cf4f494780dbf24126b318093d6221257f41b29dd65c45a2d9b0b083c1323ab"
+    },
+    {
+      "path": "native/babi_nli/path-finding__test-00000-of-00001-3f7a06fb4cf6d323.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/path-finding/test-00000-of-00001-3f7a06fb4cf6d323.parquet",
+      "bytes": 29222,
+      "sha256": "f5a6af2d4b8889f983f127686daafd13560f81620aecca04011d48dc2048445d"
+    },
+    {
+      "path": "native/babi_nli/path-finding__train-00000-of-00001-af30a1af703f06d3.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/path-finding/train-00000-of-00001-af30a1af703f06d3.parquet",
+      "bytes": 47420,
+      "sha256": "00c58e94614472d7a39dbcd42335d56058fbb172e374208c7af8e4c98ddec75e"
+    },
+    {
+      "path": "native/babi_nli/path-finding__validation-00000-of-00001-b77e0adce185f599.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/path-finding/validation-00000-of-00001-b77e0adce185f599.parquet",
+      "bytes": 29064,
+      "sha256": "09dffa379fcc71172c5df5c0b741a2e79e21c49fd4a22418f5fdd9b8be4e1cb9"
+    },
+    {
+      "path": "native/babi_nli/positional-reasoning__test-00000-of-00001-36de627d6ae5345f.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/positional-reasoning/test-00000-of-00001-36de627d6ae5345f.parquet",
+      "bytes": 10454,
+      "sha256": "28b94d8c46997bf65df1c19b639df484e9ebc738f9c245f904862e1dcceb4f56"
+    },
+    {
+      "path": "native/babi_nli/positional-reasoning__train-00000-of-00001-c069743301afce4b.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/positional-reasoning/train-00000-of-00001-c069743301afce4b.parquet",
+      "bytes": 13467,
+      "sha256": "bb3f4d1276d0b56f4d0000e7e6d3c59af1800c11f4bc347ac36edafbef2f5619"
+    },
+    {
+      "path": "native/babi_nli/positional-reasoning__validation-00000-of-00001-5ce183f4a5153dad.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/positional-reasoning/validation-00000-of-00001-5ce183f4a5153dad.parquet",
+      "bytes": 10455,
+      "sha256": "8ab55ac45e8bf1e2b0c27c7cf347b6bdd5c5d38f13e50af42f44c43a9175f174"
+    },
+    {
+      "path": "native/babi_nli/simple-negation__test-00000-of-00001-4090c1f4301fb500.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/simple-negation/test-00000-of-00001-4090c1f4301fb500.parquet",
+      "bytes": 26173,
+      "sha256": "6dbe29e09fa455b055059fcc37b603c40cd2901242b08e9d841dc834730c9892"
+    },
+    {
+      "path": "native/babi_nli/simple-negation__train-00000-of-00001-f0d4c50d4d7ab3aa.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/simple-negation/train-00000-of-00001-f0d4c50d4d7ab3aa.parquet",
+      "bytes": 35286,
+      "sha256": "b116a30ffcedd623be887789b825190f0b565ecdfecbf63de1b8fabf6cb25dfe"
+    },
+    {
+      "path": "native/babi_nli/simple-negation__validation-00000-of-00001-5342391d42dc19d0.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/simple-negation/validation-00000-of-00001-5342391d42dc19d0.parquet",
+      "bytes": 27473,
+      "sha256": "bca4edbf872883439fde7152067536b56cc2cdf39ec69f8ed95e5a3f9fa012c9"
+    },
+    {
+      "path": "native/babi_nli/single-supporting-fact__test-00000-of-00001-ef7443dc17eff706.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/single-supporting-fact/test-00000-of-00001-ef7443dc17eff706.parquet",
+      "bytes": 25374,
+      "sha256": "ddde6a769a05007bde710da1b77cc72b9cbadad3250e3d9e82c429d5543557f5"
+    },
+    {
+      "path": "native/babi_nli/single-supporting-fact__train-00000-of-00001-18c0fc0523a1f316.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/single-supporting-fact/train-00000-of-00001-18c0fc0523a1f316.parquet",
+      "bytes": 40961,
+      "sha256": "d8e6d177b0360f1a402b5f00d2e08eab139359627362a4b89ed3e8eab9c56380"
+    },
+    {
+      "path": "native/babi_nli/single-supporting-fact__validation-00000-of-00001-1403bba2ea7d1dce.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/single-supporting-fact/validation-00000-of-00001-1403bba2ea7d1dce.parquet",
+      "bytes": 25633,
+      "sha256": "09447591cea64ff85f36b1773db56e1040a1dc3239a70cf68597a8abd95ccf06"
+    },
+    {
+      "path": "native/babi_nli/size-reasoning__test-00000-of-00001-2f56d67ea03548f1.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/size-reasoning/test-00000-of-00001-2f56d67ea03548f1.parquet",
+      "bytes": 16801,
+      "sha256": "45e04726e93a25530601325e46b616def7d62d1d51acad327aebfa52d1601de4"
+    },
+    {
+      "path": "native/babi_nli/size-reasoning__train-00000-of-00001-f2e0ef7d7eec130e.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/size-reasoning/train-00000-of-00001-f2e0ef7d7eec130e.parquet",
+      "bytes": 20091,
+      "sha256": "9421092680f926494b15e9e04ab5d02ea1e17502daee44910665e8746cd2e144"
+    },
+    {
+      "path": "native/babi_nli/size-reasoning__validation-00000-of-00001-7b4d0d77e93f5050.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/size-reasoning/validation-00000-of-00001-7b4d0d77e93f5050.parquet",
+      "bytes": 16835,
+      "sha256": "9077b93d0e8d836143d468e3d8f180265a5543f02087af67f3e89a23912d210b"
+    },
+    {
+      "path": "native/babi_nli/three-arg-relations__test-00000-of-00001-828a050066119378.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/three-arg-relations/test-00000-of-00001-828a050066119378.parquet",
+      "bytes": 68297,
+      "sha256": "6f686a09d5f55d31896559efab3e00b6fc00f20278dbaeaf48f57d182f842ee2"
+    },
+    {
+      "path": "native/babi_nli/three-arg-relations__train-00000-of-00001-3f1fdf84039f3e68.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/three-arg-relations/train-00000-of-00001-3f1fdf84039f3e68.parquet",
+      "bytes": 107191,
+      "sha256": "cb4d307dde89b33c9820436dfa8ab5d2eeaba1f4d4d096bd9b019ff7f1491409"
+    },
+    {
+      "path": "native/babi_nli/three-arg-relations__validation-00000-of-00001-c69e231aaf99ea50.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/three-arg-relations/validation-00000-of-00001-c69e231aaf99ea50.parquet",
+      "bytes": 67608,
+      "sha256": "205b3a8083ea05943fe70aeff27d434c3f9ee2a5bd399b1401904c5b7dc5a659"
+    },
+    {
+      "path": "native/babi_nli/three-supporting-facts__test-00000-of-00001-c4894a5165b96d69.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/three-supporting-facts/test-00000-of-00001-c4894a5165b96d69.parquet",
+      "bytes": 147833,
+      "sha256": "d180c6a2064be8f3ed93a215526b2f9006c1fde17fa8d243960e68b01273a7f2"
+    },
+    {
+      "path": "native/babi_nli/three-supporting-facts__train-00000-of-00001-062561ab74198e86.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/three-supporting-facts/train-00000-of-00001-062561ab74198e86.parquet",
+      "bytes": 256324,
+      "sha256": "bad43361bafc5e51454456d603ce3dfe028c1b98d33c77e79ff847178ba0d2eb"
+    },
+    {
+      "path": "native/babi_nli/three-supporting-facts__validation-00000-of-00001-8999a16d8195639e.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/three-supporting-facts/validation-00000-of-00001-8999a16d8195639e.parquet",
+      "bytes": 153916,
+      "sha256": "2002f01d58c13a255a79d4d1b1a0faa9f120a096b50e27455eae5b754208d733"
+    },
+    {
+      "path": "native/babi_nli/time-reasoning__test-00000-of-00001-c8421bbd2d798012.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/time-reasoning/test-00000-of-00001-c8421bbd2d798012.parquet",
+      "bytes": 40733,
+      "sha256": "99e387590814af42504229696c1dc4a1bfac42de9a033444151cc9701c4ad5d0"
+    },
+    {
+      "path": "native/babi_nli/time-reasoning__train-00000-of-00001-746f9eecfbd27905.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/time-reasoning/train-00000-of-00001-746f9eecfbd27905.parquet",
+      "bytes": 69125,
+      "sha256": "dcbc3c8056f2126cf1df56c1e2473eda344a733934e5596ab76275ae74838693"
+    },
+    {
+      "path": "native/babi_nli/time-reasoning__validation-00000-of-00001-17ed4f9a19cdb24f.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/time-reasoning/validation-00000-of-00001-17ed4f9a19cdb24f.parquet",
+      "bytes": 43067,
+      "sha256": "74b029f6049d92805778ec8bc4ee2a460c7f2f6c9c34498b58871fd0a0246d90"
+    },
+    {
+      "path": "native/babi_nli/two-arg-relations__test-00000-of-00001-04ddec8c0dcc751d.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/two-arg-relations/test-00000-of-00001-04ddec8c0dcc751d.parquet",
+      "bytes": 15297,
+      "sha256": "e681d03cd465366dcc9509d626f8c250563ca85c5f05d3c2c9af77c3d2472f88"
+    },
+    {
+      "path": "native/babi_nli/two-arg-relations__train-00000-of-00001-972c208759f2fadb.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/two-arg-relations/train-00000-of-00001-972c208759f2fadb.parquet",
+      "bytes": 23614,
+      "sha256": "4c0444e616db77556b181ada6191e1acca3d42d70152f2377b9e179bb3aba67b"
+    },
+    {
+      "path": "native/babi_nli/two-arg-relations__validation-00000-of-00001-841d88b52e559146.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/two-arg-relations/validation-00000-of-00001-841d88b52e559146.parquet",
+      "bytes": 15622,
+      "sha256": "933b9bab04018cb003fdff101021db5ce9e4c7e46086d42acaf938de3ff7b217"
+    },
+    {
+      "path": "native/babi_nli/two-supporting-facts__test-00000-of-00001-6fa728e73941c9c0.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/two-supporting-facts/test-00000-of-00001-6fa728e73941c9c0.parquet",
+      "bytes": 51921,
+      "sha256": "4ad68bdd83c977327f679481404e36fdb8da3fb6b0fd59124601c6d9aa9bbf42"
+    },
+    {
+      "path": "native/babi_nli/two-supporting-facts__train-00000-of-00001-ea1fe593000ce4c8.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/two-supporting-facts/train-00000-of-00001-ea1fe593000ce4c8.parquet",
+      "bytes": 87506,
+      "sha256": "ba51b30a15ca03fe12aba1d6f906ddb6d4a50dc576c1624167dc37febf477a2b"
+    },
+    {
+      "path": "native/babi_nli/two-supporting-facts__validation-00000-of-00001-2c7a6e5615b6ca83.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/two-supporting-facts/validation-00000-of-00001-2c7a6e5615b6ca83.parquet",
+      "bytes": 55559,
+      "sha256": "6cf3c2854b30b4dc2eb46dc29f007afd41d280f0e58cbdd191cc6a7122552fbc"
+    },
+    {
+      "path": "native/babi_nli/yes-no-questions__test-00000-of-00001-ce2b9588e6f58742.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/yes-no-questions/test-00000-of-00001-ce2b9588e6f58742.parquet",
+      "bytes": 28592,
+      "sha256": "1cd0fe86ac0b336d031e7ead9bd194a67d63c011408f7eca5fc11c39bd24f089"
+    },
+    {
+      "path": "native/babi_nli/yes-no-questions__train-00000-of-00001-81a6512c9e73b72d.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/yes-no-questions/train-00000-of-00001-81a6512c9e73b72d.parquet",
+      "bytes": 36869,
+      "sha256": "c4ed364424b317f329c45adcf00d2185e3f51b4e9be419d8a2eaf0fc5f302f6c"
+    },
+    {
+      "path": "native/babi_nli/yes-no-questions__validation-00000-of-00001-b9aacad00ff8d5f8.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/babi_nli/resolve/80b689dc668b50f3640fc5368fd1893d385cb4e1/yes-no-questions/validation-00000-of-00001-b9aacad00ff8d5f8.parquet",
+      "bytes": 28938,
+      "sha256": "dd8e0d667bb6c1ccecf0525db2ba4c373a02607b15e1650afae6482dd5891765"
+    },
+    {
+      "path": "native/logical-entailment/data__test-00000-of-00001-3ac976a353d06d8a.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/logical-entailment/resolve/5275a96cea765dc3bbfd41e6034485791704ed69/data/test-00000-of-00001-3ac976a353d06d8a.parquet",
+      "bytes": 222566,
+      "sha256": "221df6c5f506b89f9d58cd62819382bd7b37514b2b5f15116932f98c557c244e"
+    },
+    {
+      "path": "native/logical-entailment/data__train-00000-of-00001-3b8605460ba32b74.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/logical-entailment/resolve/5275a96cea765dc3bbfd41e6034485791704ed69/data/train-00000-of-00001-3b8605460ba32b74.parquet",
+      "bytes": 2061760,
+      "sha256": "586de7ea51049ee58726e37b6e306d1c93f210ad7572b1f4d37fb38a47151027"
+    },
+    {
+      "path": "native/logical-entailment/data__validation-00000-of-00001-b1d008eb3bc8ede3.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/logical-entailment/resolve/5275a96cea765dc3bbfd41e6034485791704ed69/data/validation-00000-of-00001-b1d008eb3bc8ede3.parquet",
+      "bytes": 220727,
+      "sha256": "7c8b64e4e8ee53f476f412497b2154a0843390c0229d23df40fdea8ddd379c36"
+    },
+    {
+      "path": "native/ruletaker/data__dev-00000-of-00001-480b21836eb3db96.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/ruletaker/resolve/a3e0880baeb6ec3d478f4c4d85afe04b21b6cf7f/data/dev-00000-of-00001-480b21836eb3db96.parquet",
+      "bytes": 1854743,
+      "sha256": "bee30b8af45998ec42ae9fa1e2904b1bc77f90c4c50da38a407d89508756d4e7"
+    },
+    {
+      "path": "native/ruletaker/data__test-00000-of-00001-402c217dbcd02599.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/ruletaker/resolve/a3e0880baeb6ec3d478f4c4d85afe04b21b6cf7f/data/test-00000-of-00001-402c217dbcd02599.parquet",
+      "bytes": 3723098,
+      "sha256": "51dd62b07c199ba82870345e6c872eb0314770fbb0efbf30a632a1edbbbf3ffd"
+    },
+    {
+      "path": "native/ruletaker/data__train-00000-of-00001-52adaa842dd7ed92.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/ruletaker/resolve/a3e0880baeb6ec3d478f4c4d85afe04b21b6cf7f/data/train-00000-of-00001-52adaa842dd7ed92.parquet",
+      "bytes": 28594899,
+      "sha256": "beade0ce8650bfaf3f1d57bae54e686db029bbef277fa75617e35edc1d53b2c9"
+    },
+    {
+      "path": "tasksource_train-00000-of-00007-df4b09f073335d10.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00000-of-00007-df4b09f073335d10.parquet",
+      "bytes": 238074149,
+      "sha256": "549d95b304c0da3921245789d9e973e45a28c1bc50abd2d2a4c8fffdace017b6"
+    },
+    {
+      "path": "tasksource_train-00001-of-00007-9cf58c7c2099a667.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00001-of-00007-9cf58c7c2099a667.parquet",
+      "bytes": 254772664,
+      "sha256": "bb9cb3aff62073abeaa0287f8d426c3b0762a8d4b096dc9928426b9ec2247dd3"
+    },
+    {
+      "path": "tasksource_train-00002-of-00007-aa0273005676332f.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00002-of-00007-aa0273005676332f.parquet",
+      "bytes": 261138602,
+      "sha256": "ffbfbe48bab3c6f366510515a29f3f50c90090d0bc4ef4143de2878928741bb8"
+    },
+    {
+      "path": "tasksource_train-00003-of-00007-1ac348cdd1e39539.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00003-of-00007-1ac348cdd1e39539.parquet",
+      "bytes": 269709376,
+      "sha256": "94df26df68199d30f3a10c1afe6dc3bb34115a4abc545a8d6c02893a13bda8ae"
+    },
+    {
+      "path": "tasksource_train-00004-of-00007-6251456f7071a7e4.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00004-of-00007-6251456f7071a7e4.parquet",
+      "bytes": 270224853,
+      "sha256": "e944007a9151d52692faa3d701dc17805cedbc21b0053673c3f15b9197d370ee"
+    },
+    {
+      "path": "tasksource_train-00005-of-00007-45e81cdbcf757bdf.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00005-of-00007-45e81cdbcf757bdf.parquet",
+      "bytes": 250665476,
+      "sha256": "14b3aea3c8331a3cb9a489f7af39c87c97b1a54403e03aad662e0d3e97d52f5a"
+    },
+    {
+      "path": "tasksource_train-00006-of-00007-0ec9fe1c94797b69.parquet",
+      "url": "https://huggingface.co/datasets/tasksource/tasksource-instruct-v0/resolve/1dee7ed51b87880e37882c2cbed2d50bd114e0df/data/train-00006-of-00007-0ec9fe1c94797b69.parquet",
+      "bytes": 248739091,
+      "sha256": "1abf2e649f80a5d41fb8264180ee10327de301d325b521dc38f4850201b36619"
+    }
+  ]
+}

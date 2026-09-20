@@ -1,0 +1,7 @@
+version: 1
+# Sampled inspection findings. Do not silently relabel inherited annotations.
+original_refs:
+  'native/WANLI/train.jsonl:89756':
+    reason: The stated goal of maintaining quality does not entail that quality currently holds; inherited entailment label is not supported.
+  'banking_train.csv:7357':
+    reason: The query about needing a payment in another currency is too underspecified to unambiguously select receiving_money among 77 intents.

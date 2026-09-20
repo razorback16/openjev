@@ -1,0 +1,6 @@
+open-spiel==2.0.2
+numpy==2.5.3
+pyarrow==25.0.1
+zstandard==0.25.0
+# Optional actual OpenJev tokenizer audit uses the public-pilot environment:
+# pip install -r dataset/requirements-build.txt

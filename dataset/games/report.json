@@ -1,0 +1,86 @@
+{
+  "version": "openjev-games-v1",
+  "seed": 20260919,
+  "validation": {
+    "records": 45300,
+    "unique_groups": 45300,
+    "duplicate_ids": 0,
+    "cross_split_group_overlap": 0,
+    "duplicate_chess_positions": 0,
+    "invalid_targets": 0,
+    "invalid_distributions": 0
+  },
+  "teachers": {
+    "chess_puzzles": 10000,
+    "chess_evaluations": 15000,
+    "gomoku": {
+      "attempts": 22553,
+      "rejected": {
+        "motif_not_proven": 6355,
+        "terminal": 1197,
+        "shortlist_omitted_all_verified_moves": 1
+      },
+      "shortlist_recall": {
+        "positions": 15001,
+        "positions_with_proven_move_in_top16": 15000
+      }
+    },
+    "connect_four": {
+      "attempts": 8628,
+      "search_states": 178972
+    },
+    "kuhn_poker": {
+      "information_states": 12,
+      "iterations": 10000,
+      "exploitability": 9.632756980737511e-06,
+      "units": "chips per player; OpenSpiel exploitability"
+    },
+    "leduc_poker": {
+      "information_states": 288,
+      "iterations": 10000,
+      "exploitability": 5.416004162123178e-06,
+      "units": "chips per player; OpenSpiel exploitability"
+    }
+  },
+  "versions": {
+    "open_spiel": "2.0.2",
+    "numpy": "2.5.3",
+    "pyarrow": "25.0.1"
+  },
+  "sources_lock_sha256": "4fd16bf5493c18b17f28b6e1b0b8c139008af099efc0f283ebc6d3ad17c54a33",
+  "build_script_sha256": "4fb1afb726986098dc651da4fc8c2bd9a6e40a4325eabd194cfa9f5bb5fc0bc4",
+  "splits": {
+    "train": {
+      "records": 40785,
+      "games": {
+        "gomoku": 13535,
+        "chess": 22502,
+        "connect_four": 4492,
+        "leduc_poker": 245,
+        "kuhn_poker": 11
+      },
+      "sha256": "89eda533a80779c007b732a5f67ebcb9f634ea086b221d87ea40fc3cf069aa56"
+    },
+    "validation": {
+      "records": 2246,
+      "games": {
+        "gomoku": 739,
+        "connect_four": 259,
+        "chess": 1227,
+        "leduc_poker": 21
+      },
+      "sha256": "d9efabb467ff388d0707b84c34653a8565386aafa090d135da755e4fa7a803b8"
+    },
+    "calibration": {
+      "records": 2269,
+      "games": {
+        "gomoku": 726,
+        "chess": 1271,
+        "connect_four": 249,
+        "leduc_poker": 22,
+        "kuhn_poker": 1
+      },
+      "sha256": "7722ff40fd77363120b70dee90cefa3e9110d30f48b59086ddfd75052100cdd1"
+    }
+  }
+}

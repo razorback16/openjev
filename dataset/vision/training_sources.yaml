@@ -1,0 +1,29 @@
+version: openjev-vision-v1
+seed: 20260920
+image_target: 100000
+split_targets: {train: 85000, calibration: 5000, evaluation: 10000}
+sources:
+  games:
+    images: 25000
+    license: Apache-2.0
+    selection: preserve_original_parent_splits
+  structured:
+    images: 30000
+    license: Apache-2.0
+    generator: deterministic_known_data_rendering
+  clevr:
+    images: 25000
+    license: CC-BY-4.0
+    url: https://cs.stanford.edu/people/jcjohns/clevr/
+    train: 20000
+    calibration_from_official_train: 1000
+    evaluation_from_official_validation: 4000
+  photos:
+    images: 20000
+    annotations_license: CC-BY-4.0
+    allowed_image_licenses: [CC0-1.0, CC-BY-2.0, CC-BY-2.5, CC-BY-3.0, CC-BY-4.0]
+    verification: original_page_matching_ImageObject_JSONLD
+    train: 17000
+    calibration_from_official_validation: 1000
+    evaluation_from_official_validation: 2000
+# This manifest documents fixed v1 defaults; generation enforces them in code.

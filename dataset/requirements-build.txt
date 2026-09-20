@@ -1,0 +1,7 @@
+pyarrow==25.0.1
+PyYAML==6.0.3
+datasketch==2.0.0
+numpy==2.5.3
+scipy==1.18.1
+transformers==5.17.0
+tokenizers==0.23.2

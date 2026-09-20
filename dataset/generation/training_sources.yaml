@@ -1,0 +1,15 @@
+version: 1
+sources:
+  - source: nvidia/Nemotron-SFT-Instruction-Following-Chat-v3
+    revision: be3b3e04ef605ac9d3f8f35b9d5a632f4a3a3402
+    terms: [CC-BY-4.0, ODC-BY-1.0, Apache-2.0]
+  - source: nvidia/Nemotron-SFT-Agentic-v2
+    revision: 7c804833427f633ccd53b582dbf02525fd680f78
+    terms: [CC-BY-4.0, Apache-2.0, MIT]
+sampling: bounded file prefixes; smoke test only
+split_policy: root-prompt hash; all turns and thinking variants grouped
+training_mix:
+  direct_classification: 0.60
+  thought_conditioned_classification: 0.20
+  general_generation: 0.20
+note: Proposed mixture, not validated retention. Preserve upstream terms and notices.

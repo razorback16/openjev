@@ -1,0 +1,453 @@
+{
+  "training_seeds": [
+    818,
+    819,
+    820
+  ],
+  "validation_records": 96,
+  "calibration_records": 48,
+  "training_records_consumed_per_run": 256,
+  "steps_per_run": 128,
+  "trainable_parameters": 5591040,
+  "baseline": {
+    "accuracy": 0.6482412060301508,
+    "nll": 1.2951881617535217,
+    "brier": 0.5581382612514869,
+    "ece_10_bins": 0.23337847523383531,
+    "two_seed_prediction_disagreement": 0.04522613065326633,
+    "records": 96,
+    "seed_slot_observations": 398
+  },
+  "baseline_calibrated": {
+    "accuracy": 0.6482412060301508,
+    "nll": 0.821716904542481,
+    "brier": 0.45715316500879405,
+    "ece_10_bins": 0.10800252534582659,
+    "two_seed_prediction_disagreement": 0.04522613065326633,
+    "records": 96,
+    "seed_slot_observations": 398
+  },
+  "adapted_mean": {
+    "accuracy": {
+      "mean": 0.6566164154103853,
+      "min": 0.6557788944723618,
+      "max": 0.6582914572864321
+    },
+    "nll": {
+      "mean": 0.8329534547915475,
+      "min": 0.805943289548678,
+      "max": 0.8545756058574031
+    },
+    "brier": {
+      "mean": 0.4370138100017675,
+      "min": 0.42672302182107225,
+      "max": 0.4436528261746246
+    },
+    "ece_10_bins": {
+      "mean": 0.11719582937705691,
+      "min": 0.1098625953310707,
+      "max": 0.12497332245572745
+    },
+    "two_seed_prediction_disagreement": {
+      "mean": 0.09882747068676717,
+      "min": 0.09045226130653267,
+      "max": 0.11055276381909548
+    }
+  },
+  "adapted_calibrated_mean": {
+    "accuracy": {
+      "mean": 0.6566164154103853,
+      "min": 0.6557788944723618,
+      "max": 0.6582914572864321
+    },
+    "nll": {
+      "mean": 0.7487981406734584,
+      "min": 0.734086848919558,
+      "max": 0.7725353636858711
+    },
+    "brier": {
+      "mean": 0.41034698559805166,
+      "min": 0.40235397418838736,
+      "max": 0.42170796614903727
+    },
+    "ece_10_bins": {
+      "mean": 0.04171265902779747,
+      "min": 0.02633401273497941,
+      "max": 0.0541830458731169
+    },
+    "two_seed_prediction_disagreement": {
+      "mean": 0.09882747068676717,
+      "min": 0.09045226130653267,
+      "max": 0.11055276381909548
+    }
+  },
+  "per_seed": [
+    {
+      "baseline": {
+        "accuracy": 0.6482412060301508,
+        "nll": 1.2951881617535217,
+        "brier": 0.5581382612514869,
+        "ece_10_bins": 0.23337847523383531,
+        "two_seed_prediction_disagreement": 0.04522613065326633,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "adapted": {
+        "accuracy": 0.6557788944723618,
+        "nll": 0.805943289548678,
+        "brier": 0.42672302182107225,
+        "ece_10_bins": 0.11675157034437258,
+        "two_seed_prediction_disagreement": 0.09045226130653267,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "adapted_calibrated": {
+        "accuracy": 0.6557788944723618,
+        "nll": 0.734086848919558,
+        "brier": 0.40235397418838736,
+        "ece_10_bins": 0.044620918475296104,
+        "two_seed_prediction_disagreement": 0.09045226130653267,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "temperature": 1.714568937563994,
+      "accuracy_delta_95pct_record_bootstrap": [
+        -0.02459354170419744,
+        0.04205665309521605
+      ],
+      "family_metrics": {
+        "games": {
+          "baseline": {
+            "accuracy": 0.041666666666666664,
+            "nll": 3.6374007837346922,
+            "brier": 1.1366877537187794,
+            "ece_10_bins": 0.3454160642979865,
+            "two_seed_prediction_disagreement": 0.25,
+            "records": 12,
+            "seed_slot_observations": 24
+          },
+          "adapted": {
+            "accuracy": 0.041666666666666664,
+            "nll": 3.437430172879522,
+            "brier": 1.0833917064901206,
+            "ece_10_bins": 0.29855291169349163,
+            "two_seed_prediction_disagreement": 0.3333333333333333,
+            "records": 12,
+            "seed_slot_observations": 24
+          }
+        },
+        "native": {
+          "baseline": {
+            "accuracy": 1.0,
+            "nll": 0.01794656319471523,
+            "brier": 0.004303822565673486,
+            "ece_10_bins": 0.016154167726365277,
+            "two_seed_prediction_disagreement": 0.0,
+            "records": 12,
+            "seed_slot_observations": 72
+          },
+          "adapted": {
+            "accuracy": 1.0,
+            "nll": 0.03569486438423532,
+            "brier": 0.009528364706171771,
+            "ece_10_bins": 0.03227504294260751,
+            "two_seed_prediction_disagreement": 0.0,
+            "records": 12,
+            "seed_slot_observations": 72
+          }
+        },
+        "public": {
+          "baseline": {
+            "accuracy": 0.6125827814569537,
+            "nll": 1.413559990126654,
+            "brier": 0.6442008167685848,
+            "ece_10_bins": 0.29118741430177275,
+            "two_seed_prediction_disagreement": 0.039735099337748346,
+            "records": 72,
+            "seed_slot_observations": 302
+          },
+          "adapted": {
+            "accuracy": 0.6225165562913907,
+            "nll": 0.7804538902503325,
+            "brier": 0.4740010578482763,
+            "ece_10_bins": 0.1378333053254445,
+            "two_seed_prediction_disagreement": 0.09271523178807947,
+            "records": 72,
+            "seed_slot_observations": 302
+          }
+        }
+      },
+      "limitations": [
+        "One training seed and small validation sample; no production-quality claim.",
+        "BF16 Transformers one-pass evaluation; no vLLM/NVFP4 deployment-equivalence claim.",
+        "Decoder-only custom LoRA; encoder frozen and unadapted; not directly deployable through current vLLM.",
+        "No image training or image evaluation in this text pilot.",
+        "Seed disagreement is measured; actual engine reread rate was not measured.",
+        "Temperature fitted globally on a small separate calibration set; ECE is noisy."
+      ],
+      "baseline_temperature": 3.135224924703704,
+      "baseline_calibrated": {
+        "accuracy": 0.6482412060301508,
+        "nll": 0.821716904542481,
+        "brier": 0.45715316500879405,
+        "ece_10_bins": 0.10800252534582659,
+        "two_seed_prediction_disagreement": 0.04522613065326633,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "calibrated_nll_delta_95pct_record_bootstrap": [
+        -0.13680380316006094,
+        -0.038834746335531405
+      ],
+      "games_acceptable_move_accuracy": {
+        "baseline": 0.041666666666666664,
+        "adapted": 0.041666666666666664
+      }
+    },
+    {
+      "baseline": {
+        "accuracy": 0.6482412060301508,
+        "nll": 1.2951881617535217,
+        "brier": 0.5581382612514869,
+        "ece_10_bins": 0.23337847523383531,
+        "two_seed_prediction_disagreement": 0.04522613065326633,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "adapted": {
+        "accuracy": 0.6582914572864321,
+        "nll": 0.8545756058574031,
+        "brier": 0.4436528261746246,
+        "ece_10_bins": 0.1098625953310707,
+        "two_seed_prediction_disagreement": 0.11055276381909548,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "adapted_calibrated": {
+        "accuracy": 0.6582914572864321,
+        "nll": 0.7725353636858711,
+        "brier": 0.42170796614903727,
+        "ece_10_bins": 0.02633401273497941,
+        "two_seed_prediction_disagreement": 0.11055276381909548,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "temperature": 1.6337509432231352,
+      "accuracy_delta_95pct_record_bootstrap": [
+        -0.026181454946266187,
+        0.04594594594594595
+      ],
+      "family_metrics": {
+        "games": {
+          "baseline": {
+            "accuracy": 0.041666666666666664,
+            "nll": 3.6374007837346922,
+            "brier": 1.1366877537187794,
+            "ece_10_bins": 0.3454160642979865,
+            "two_seed_prediction_disagreement": 0.25,
+            "records": 12,
+            "seed_slot_observations": 24
+          },
+          "adapted": {
+            "accuracy": 0.041666666666666664,
+            "nll": 3.5327161109265837,
+            "brier": 1.0706000984991266,
+            "ece_10_bins": 0.28305954750570395,
+            "two_seed_prediction_disagreement": 0.6666666666666666,
+            "records": 12,
+            "seed_slot_observations": 24
+          }
+        },
+        "native": {
+          "baseline": {
+            "accuracy": 1.0,
+            "nll": 0.01794656319471523,
+            "brier": 0.004303822565673486,
+            "ece_10_bins": 0.016154167726365277,
+            "two_seed_prediction_disagreement": 0.0,
+            "records": 12,
+            "seed_slot_observations": 72
+          },
+          "adapted": {
+            "accuracy": 0.9722222222222222,
+            "nll": 0.07275193279032356,
+            "brier": 0.032704248050221235,
+            "ece_10_bins": 0.051699733725948285,
+            "two_seed_prediction_disagreement": 0.05555555555555555,
+            "records": 12,
+            "seed_slot_observations": 72
+          }
+        },
+        "public": {
+          "baseline": {
+            "accuracy": 0.6125827814569537,
+            "nll": 1.413559990126654,
+            "brier": 0.6442008167685848,
+            "ece_10_bins": 0.29118741430177275,
+            "two_seed_prediction_disagreement": 0.039735099337748346,
+            "records": 72,
+            "seed_slot_observations": 302
+          },
+          "adapted": {
+            "accuracy": 0.6324503311258278,
+            "nll": 0.8281382957222022,
+            "brier": 0.4918036973308134,
+            "ece_10_bins": 0.1410931859214572,
+            "two_seed_prediction_disagreement": 0.07947019867549669,
+            "records": 72,
+            "seed_slot_observations": 302
+          }
+        }
+      },
+      "limitations": [
+        "One training seed and small validation sample; no production-quality claim.",
+        "BF16 Transformers one-pass evaluation; no vLLM/NVFP4 deployment-equivalence claim.",
+        "Decoder-only custom LoRA; encoder frozen and unadapted; not directly deployable through current vLLM.",
+        "No image training or image evaluation in this text pilot.",
+        "Seed disagreement is measured; actual engine reread rate was not measured.",
+        "Temperature fitted globally on a small separate calibration set; ECE is noisy."
+      ],
+      "baseline_temperature": 3.135224924703704,
+      "baseline_calibrated": {
+        "accuracy": 0.6482412060301508,
+        "nll": 0.821716904542481,
+        "brier": 0.45715316500879405,
+        "ece_10_bins": 0.10800252534582659,
+        "two_seed_prediction_disagreement": 0.04522613065326633,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "calibrated_nll_delta_95pct_record_bootstrap": [
+        -0.09714878723864942,
+        0.000390647757623701
+      ],
+      "games_acceptable_move_accuracy": {
+        "baseline": 0.041666666666666664,
+        "adapted": 0.041666666666666664
+      }
+    },
+    {
+      "baseline": {
+        "accuracy": 0.6482412060301508,
+        "nll": 1.2951881617535217,
+        "brier": 0.5581382612514869,
+        "ece_10_bins": 0.23337847523383531,
+        "two_seed_prediction_disagreement": 0.04522613065326633,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "adapted": {
+        "accuracy": 0.6557788944723618,
+        "nll": 0.8383414689685614,
+        "brier": 0.4406655820096056,
+        "ece_10_bins": 0.12497332245572745,
+        "two_seed_prediction_disagreement": 0.09547738693467336,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "adapted_calibrated": {
+        "accuracy": 0.6557788944723618,
+        "nll": 0.7397722094149461,
+        "brier": 0.40697901645673035,
+        "ece_10_bins": 0.0541830458731169,
+        "two_seed_prediction_disagreement": 0.09547738693467336,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "temperature": 1.770656636590986,
+      "accuracy_delta_95pct_record_bootstrap": [
+        -0.023195876288659795,
+        0.03768844221105527
+      ],
+      "family_metrics": {
+        "games": {
+          "baseline": {
+            "accuracy": 0.041666666666666664,
+            "nll": 3.6374007837346922,
+            "brier": 1.1366877537187794,
+            "ece_10_bins": 0.3454160642979865,
+            "two_seed_prediction_disagreement": 0.25,
+            "records": 12,
+            "seed_slot_observations": 24
+          },
+          "adapted": {
+            "accuracy": 0.0,
+            "nll": 3.570592470351128,
+            "brier": 1.1022219412834149,
+            "ece_10_bins": 0.3371012944050047,
+            "two_seed_prediction_disagreement": 0.3333333333333333,
+            "records": 12,
+            "seed_slot_observations": 24
+          }
+        },
+        "native": {
+          "baseline": {
+            "accuracy": 1.0,
+            "nll": 0.01794656319471523,
+            "brier": 0.004303822565673486,
+            "ece_10_bins": 0.016154167726365277,
+            "two_seed_prediction_disagreement": 0.0,
+            "records": 12,
+            "seed_slot_observations": 72
+          },
+          "adapted": {
+            "accuracy": 1.0,
+            "nll": 0.02026723732007505,
+            "brier": 0.0049654410008482495,
+            "ece_10_bins": 0.018710576420173344,
+            "two_seed_prediction_disagreement": 0.0,
+            "records": 12,
+            "seed_slot_observations": 72
+          }
+        },
+        "public": {
+          "baseline": {
+            "accuracy": 0.6125827814569537,
+            "nll": 1.413559990126654,
+            "brier": 0.6442008167685848,
+            "ece_10_bins": 0.29118741430177275,
+            "two_seed_prediction_disagreement": 0.039735099337748346,
+            "records": 72,
+            "seed_slot_observations": 302
+          },
+          "adapted": {
+            "accuracy": 0.6258278145695364,
+            "nll": 0.8162465042185925,
+            "brier": 0.4919670970098013,
+            "ece_10_bins": 0.14237123435070165,
+            "two_seed_prediction_disagreement": 0.09933774834437085,
+            "records": 72,
+            "seed_slot_observations": 302
+          }
+        }
+      },
+      "limitations": [
+        "One training seed and small validation sample; no production-quality claim.",
+        "BF16 Transformers one-pass evaluation; no vLLM/NVFP4 deployment-equivalence claim.",
+        "Decoder-only custom LoRA; encoder frozen and unadapted; not directly deployable through current vLLM.",
+        "No image training or image evaluation in this text pilot.",
+        "Seed disagreement is measured; actual engine reread rate was not measured.",
+        "Temperature fitted globally on a small separate calibration set; ECE is noisy."
+      ],
+      "baseline_temperature": 3.135224924703704,
+      "baseline_calibrated": {
+        "accuracy": 0.6482412060301508,
+        "nll": 0.821716904542481,
+        "brier": 0.45715316500879405,
+        "ece_10_bins": 0.10800252534582659,
+        "two_seed_prediction_disagreement": 0.04522613065326633,
+        "records": 96,
+        "seed_slot_observations": 398
+      },
+      "calibrated_nll_delta_95pct_record_bootstrap": [
+        -0.12469331085947594,
+        -0.03590504011414523
+      ],
+      "games_acceptable_move_accuracy": {
+        "baseline": 0.041666666666666664,
+        "adapted": 0.0
+      }
+    }
+  ],
+  "conclusion": "Feasible and promising for probability quality; accuracy gain not established; no game-skill gain; canvas-seed stability worsened."
+}

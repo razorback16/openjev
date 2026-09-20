@@ -1,0 +1,37 @@
+{
+  "all_equal": true,
+  "files": {
+    "train.jsonl": {
+      "sha256": "89eda533a80779c007b732a5f67ebcb9f634ea086b221d87ea40fc3cf069aa56",
+      "independent_build_sha256": "89eda533a80779c007b732a5f67ebcb9f634ea086b221d87ea40fc3cf069aa56",
+      "equal": true
+    },
+    "train.parquet": {
+      "sha256": "c311dcf2af4919c4966899de354e09e6f217bd0d3ab8f8ed7ed877bf0de12bf5",
+      "independent_build_sha256": "c311dcf2af4919c4966899de354e09e6f217bd0d3ab8f8ed7ed877bf0de12bf5",
+      "equal": true
+    },
+    "validation.jsonl": {
+      "sha256": "d9efabb467ff388d0707b84c34653a8565386aafa090d135da755e4fa7a803b8",
+      "independent_build_sha256": "d9efabb467ff388d0707b84c34653a8565386aafa090d135da755e4fa7a803b8",
+      "equal": true
+    },
+    "validation.parquet": {
+      "sha256": "ce2f674e0e8e0fe6803a017bb4be6d84b09606c20d97a83817190953fe18edbf",
+      "independent_build_sha256": "ce2f674e0e8e0fe6803a017bb4be6d84b09606c20d97a83817190953fe18edbf",
+      "equal": true
+    },
+    "calibration.jsonl": {
+      "sha256": "7722ff40fd77363120b70dee90cefa3e9110d30f48b59086ddfd75052100cdd1",
+      "independent_build_sha256": "7722ff40fd77363120b70dee90cefa3e9110d30f48b59086ddfd75052100cdd1",
+      "equal": true
+    },
+    "calibration.parquet": {
+      "sha256": "8db3fffa649c10ff3ea51c778664d719407afd75941e3453dd61d5f1a0d757f6",
+      "independent_build_sha256": "8db3fffa649c10ff3ea51c778664d719407afd75941e3453dd61d5f1a0d757f6",
+      "equal": true
+    }
+  },
+  "seed": 20260919,
+  "scope": "two independent offline builds with the same frozen inputs and pinned environment"
+}

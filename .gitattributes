@@ -1,0 +1,3 @@
+dataset/**/notices/** -whitespace
+dataset/notices/** -whitespace
+dataset/vision/assets/LICENSE-DejaVu.txt -whitespace

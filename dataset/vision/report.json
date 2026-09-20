@@ -1,0 +1,55 @@
+{
+  "version": "openjev-vision-v1",
+  "seed": 20260920,
+  "images": 100000,
+  "decision_slots": 200000,
+  "unique_encoded_image_hashes": 100000,
+  "unique_decoded_image_hashes": 100000,
+  "within_split_duplicate_pairs": [],
+  "cross_split_exact_duplicates": 0,
+  "cross_split_near_photo_candidates": 0,
+  "image_bytes": 10434933460,
+  "versions": {
+    "Pillow": "12.3.0",
+    "numpy": "2.5.3",
+    "transformers": "5.17.0",
+    "tokenizers": "0.23.2"
+  },
+  "builder_sha256": "058c70fef8904b578c9d33c9ea9874f46d9cb9aecea6d6bc9a5c12e720f091f4",
+  "splits": {
+    "train": {
+      "images": 85000,
+      "decision_slots": 169100,
+      "families": {
+        "games": 20900,
+        "clevr": 20000,
+        "structured": 27100,
+        "photos": 17000
+      },
+      "jsonl_sha256": "50729536622e64fa552b4ba316917980acc054efbb547450d64a66dcf2c7d4af"
+    },
+    "calibration": {
+      "images": 5000,
+      "decision_slots": 8951,
+      "families": {
+        "clevr": 1000,
+        "photos": 1000,
+        "games": 2049,
+        "structured": 951
+      },
+      "jsonl_sha256": "b3ae913809a3f8be9a0b10286bed3b645c220872ac15ca54e14ebbab6acf0a36"
+    },
+    "evaluation": {
+      "images": 10000,
+      "decision_slots": 21949,
+      "families": {
+        "games": 2051,
+        "clevr": 4000,
+        "structured": 1949,
+        "photos": 2000
+      },
+      "jsonl_sha256": "0baa637cfce302fe93ef4081119183a4714a73ae23b4babf3faaf467fbda3c6f"
+    }
+  },
+  "model_inference_performed": false
+}

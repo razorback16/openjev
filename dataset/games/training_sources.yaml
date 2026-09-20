@@ -1,0 +1,33 @@
+version: openjev-games-v1
+allowed_licenses: [CC0-1.0, Apache-2.0]
+sources:
+  lichess_puzzles:
+    url: https://database.lichess.org/#puzzles
+    license: CC0-1.0
+    records: 10000
+    min_popularity: 80
+    min_plays: 20
+  lichess_evaluations:
+    url: https://database.lichess.org/#evals
+    license: CC0-1.0
+    records: 15000
+    min_depth: 20
+    min_knodes: 100
+  gomoku:
+    license: Apache-2.0
+    records: 15000
+    rules: freestyle_15x15
+    teacher: verified_tactical_proofs
+  connect_four:
+    license: Apache-2.0
+    records: 5000
+    teacher: exact_endgame_negamax
+  poker:
+    license: Apache-2.0
+    games: [kuhn_poker, leduc_poker]
+    records: 300
+    teacher: openspiel_CFRPlus_average_policy
+    iterations: 10000
+    leduc_suit_isomorphism: true
+    maximum_teacher_exploitability: 0.01
+# This manifest documents the v1 defaults; the offline compiler enforces them.

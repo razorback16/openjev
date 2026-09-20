@@ -251,6 +251,36 @@ pip install -e path/to/openjev && python -m openjev
 pip install -e '.[test]' && pytest
 ```
 
+The public-data training pilot, reproducible compiler, source allowlist, and
+license notices are documented in [dataset/METHODOLOGY.md](dataset/METHODOLOGY.md).
+Dataset preparation is separate from the inference server; no fine-tuned model
+or measured quality gain is claimed by the data build.
+
+The [games supplement](dataset/games/METHODOLOGY.md) adds 45,300 chess, Gomoku,
+Connect Four, and Kuhn/Leduc poker decisions, with permissive source licensing,
+reproducible solvers, and game-rule audits. Poker records retain mixed-strategy
+targets separately from ordinary decision confidence.
+
+The [Texas Hold'em supplement](dataset/holdem/METHODOLOGY.md) adds another 15,000
+records: exact hand categories, draw counts, showdown equity, and certified
+strategies for explicitly restricted river games. It does not claim full-game
+no-limit Hold'em strategy.
+
+The [100K-image vision pool](dataset/vision/METHODOLOGY.md) combines rendered
+games, structured visuals, CLEVR, and individually license-checked Open Images
+photographs. It reserves 10,000 images for evaluation and supplies image-backed
+OpenJev requests, source attribution, integrity audits, and split-specific shards.
+
+The [slot-training feasibility pilot](dataset/PILOT-TRAINING.md) documents the
+small DiffusionGemma adapter experiment, held-out evaluation, and cost controls.
+The [pilot results](dataset/training-pilot/RESULTS.md) report three completed runs:
+better probability quality, a small inconclusive accuracy change, and no game-skill gain.
+
+[Generation and thinking rehearsal](dataset/generation/METHODOLOGY.md) adds
+NVIDIA Nemotron thinking, nonthinking, and agentic examples and original-model thoughts collected through
+the existing think-before-classify path. The mixed objective uses one shared
+model; retention and classification accuracy still require a new evaluation.
+
 ## License
 
 Apache-2.0. The DiffusionGemma weights are Apache-2.0 (NVIDIA / Google).

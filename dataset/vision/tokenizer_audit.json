@@ -1,0 +1,17 @@
+{
+  "tokenizer": "nvidia/diffusiongemma-26B-A4B-it-NVFP4",
+  "tokenizer_sha256": "bca34862f49c6a63155300a313b0d3f901ad1c16d619d19c2677ba963449085d",
+  "records": 100000,
+  "decision_slots": 200000,
+  "template_shapes": 189,
+  "max_text_prompt_tokens": 877,
+  "image_processor": "Gemma4ImageProcessor",
+  "image_processor_sha256": "12476d626b89e273a9b2c6a493a6319ab02427ebfcd3635d92b29584b27c7249",
+  "max_image_tokens": 279,
+  "actual_image_preprocessing_samples_verified": 6,
+  "max_estimated_combined_tokens_with_canvas_and_marker_margin": 1215,
+  "image_token_accounting": "cached multimodal processor dimensions; backend inference not run",
+  "invalid_templates": 0,
+  "invalid_targets": 0,
+  "model_inference_performed": false
+}

@@ -9,3 +9,12 @@ __pycache__/
 # agent skills and local agent config, not part of the server
 .agents/
 .claude/
+
+data/openjev-pilot/
+data/openjev-games/
+data/openjev-holdem/
+data/openjev-vision/
+data/openjev-native-pilot/
+data/openjev-training-pilot/
+data/openjev-generation/
+data/openjev-thinking/

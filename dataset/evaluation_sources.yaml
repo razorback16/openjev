@@ -1,0 +1,27 @@
+version: 1
+# Reserve whole benchmark families, including aliases inside instruction mixtures.
+excluded_task_patterns:
+  - '*mmlu*'
+  - '*bigbench*'
+  - '*big_bench*'
+  - '*big-bench*'
+  - '*arc*'
+  - '*hellaswag*'
+  - '*winogrande*'
+  - '*piqa*'
+  - '*commonsense_qa*'
+  - '*openbookqa*'
+  - '*gsm8k*'
+  - '*truthfulqa*'
+  - '*humaneval*'
+  - '*mbpp*'
+  - '*chaosnli*'
+  - '*anli*'
+# WANLI is a separate CC-BY dataset, not facebook/ANLI.
+exact_pattern_exceptions: [WANLI]
+policy:
+  original_non_train_splits: exclude
+  shared_original_contexts_across_splits: exclude
+  unknown_sources_or_licenses: exclude
+  major_benchmark_evaluation: not_run
+  pretraining_contamination: unknown

@@ -1,0 +1,44 @@
+[
+  {
+    "file": "puzzle.csv",
+    "url": "https://database.lichess.org/lichess_db_puzzle.csv.zst",
+    "license": "CC0-1.0",
+    "extraction": "first complete records, original order",
+    "records": 60000,
+    "http_headers": {
+      "Server": "nginx",
+      "Date": "Sun, 20 Sep 2026 01:49:50 GMT",
+      "Content-Type": "application/octet-stream",
+      "Content-Length": "304429328",
+      "Last-Modified": "Wed, 09 Sep 2026 17:40:14 GMT",
+      "Connection": "close",
+      "ETag": "\"6aa199fe-12253910\"",
+      "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+      "X-Frame-Options": "DENY",
+      "Accept-Ranges": "bytes"
+    },
+    "bytes": 11105324,
+    "sha256": "48221413223408392e068536fbc85d9f2ee3a2dc978680f8a7a2cd114fa3622e"
+  },
+  {
+    "file": "eval.jsonl",
+    "url": "https://database.lichess.org/lichess_db_eval.jsonl.zst",
+    "license": "CC0-1.0",
+    "extraction": "first complete records, original order",
+    "records": 120000,
+    "http_headers": {
+      "Server": "nginx",
+      "Date": "Sun, 20 Sep 2026 01:49:53 GMT",
+      "Content-Type": "application/octet-stream",
+      "Content-Length": "22086532809",
+      "Last-Modified": "Thu, 10 Sep 2026 02:44:09 GMT",
+      "Connection": "close",
+      "ETag": "\"6aa21979-52475bec9\"",
+      "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+      "X-Frame-Options": "DENY",
+      "Accept-Ranges": "bytes"
+    },
+    "bytes": 66456917,
+    "sha256": "ae7d888d08921f703dda256af78ba8c169dfd8ccd965142f1c7a1e2a398cf61b"
+  }
+]

@@ -1,0 +1,59 @@
+version: 1
+seed: 20260919
+expansion_probability: 0.4
+allowed_licenses: [Apache-2.0, MIT, BSD-3-Clause, BSD-2-Clause, CC0-1.0, CC-BY-4.0, CC-BY-3.0]
+split_proportions: {train: 0.9, validation: 0.05, calibration: 0.05}
+train_targets: {tasksource: 60000, flan: 20000, goemotions: 5000, helpsteer: 2000}
+# TaskSource and FLAN are containers, not blanket licenses for their contents.
+# Only these underlying sources are allowed. Unknown sources fail closed.
+sources:
+  banking77:
+    family: tasksource
+    task_patterns: [banking77]
+    upstream: PolyAI/banking77
+    license: CC-BY-4.0
+    evidence: https://github.com/PolyAI-LDN/task-specific-datasets/blob/master/LICENSE
+  wanli:
+    family: tasksource
+    task_patterns: [WANLI]
+    upstream: alisawuffles/WANLI
+    license: CC-BY-4.0
+    evidence: https://huggingface.co/datasets/alisawuffles/WANLI
+  babi:
+    family: tasksource
+    task_patterns: [babi_nli/*]
+    upstream: tasksource/babi_nli
+    license: BSD-3-Clause
+    evidence: https://github.com/facebookarchive/bAbI-tasks/blob/master/LICENSE.md
+  ruletaker:
+    family: tasksource
+    task_patterns: [ruletaker]
+    upstream: tasksource/ruletaker
+    license: Apache-2.0
+    evidence: https://github.com/allenai/ruletaker/blob/master/LICENSE
+  logical:
+    family: tasksource
+    task_patterns: [logical-entailment]
+    upstream: tasksource/logical-entailment
+    license: Apache-2.0
+    evidence: https://github.com/google-deepmind/logical-entailment-dataset/blob/master/LICENSE
+  cosmos:
+    family: flan
+    task_patterns: [cosmos_qa_10templates]
+    upstream: allenai/cosmos_qa
+    license: CC-BY-4.0
+    evidence: https://huggingface.co/datasets/allenai/cosmos_qa#licensing-information
+    note: Included as a training source; do not claim Cosmos QA as an unseen benchmark.
+  goemotions:
+    family: goemotions
+    task_patterns: [goemotions]
+    upstream: google-research-datasets/go_emotions
+    license: Apache-2.0
+    evidence: https://github.com/google-research/google-research/tree/master/goemotions
+  helpsteer:
+    family: helpsteer
+    task_patterns: [helpsteer]
+    upstream: nvidia/HelpSteer
+    license: CC-BY-4.0
+    evidence: https://huggingface.co/datasets/nvidia/HelpSteer
+    note: Public model-generated responses with human ordinal ratings; 2000-record Score supplement.

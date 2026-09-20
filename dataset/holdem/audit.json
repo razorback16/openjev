@@ -1,0 +1,20 @@
+{
+  "records": 15000,
+  "subtasks": {
+    "hand_category": 4000,
+    "restricted_river_strategy": 5000,
+    "showdown_equity": 3000,
+    "category_improvement_outs": 3000
+  },
+  "certified_river_games": 625,
+  "independent_normal_form_max_best_response_gap_chips": 5.684341886080802e-14,
+  "independent_evaluator_verified_all_fundamentals": true,
+  "duplicate_ids": 0,
+  "cross_split_board_group_overlap": 0,
+  "invalid_targets": 0,
+  "split_sha256": {
+    "train": "5bfdd82ca070f40ea25ace6e90b5714c7fa497a174c4ebce74a550c1aeedd4b9",
+    "validation": "f25bdb807286209656c0a98ef6cfc064829eb9e4c93b6c837a85449226f3ab9b",
+    "calibration": "a4baea727db64344f09f889b0368a487a9f8634d27f9be093a7499fb5c9564fe"
+  }
+}

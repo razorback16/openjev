@@ -1,0 +1,23 @@
+{
+  "all_equal": true,
+  "image_files_verified": 100000,
+  "parts": {
+    "parts/games.jsonl": {
+      "sha256": "66bdedccc88ca2de767e1321faf39184fa635064409d2c4b910dcd0609b019fb",
+      "independent_build_sha256": "66bdedccc88ca2de767e1321faf39184fa635064409d2c4b910dcd0609b019fb"
+    },
+    "parts/structured.jsonl": {
+      "sha256": "02e210c448800c7c235d8c5f5b53c5ad3cf49e5a4e4815f11bba8873d0dafb59",
+      "independent_build_sha256": "02e210c448800c7c235d8c5f5b53c5ad3cf49e5a4e4815f11bba8873d0dafb59"
+    },
+    "parts/clevr.jsonl": {
+      "sha256": "77e7987b866eb0fb97a3aad0e54da32e3d7ec06fd112d92f1f3be442de830e53",
+      "independent_build_sha256": "77e7987b866eb0fb97a3aad0e54da32e3d7ec06fd112d92f1f3be442de830e53"
+    },
+    "parts/photos.jsonl": {
+      "sha256": "2a6c752fec601402ff033842e278f15e218717d38d8add0449c413f09c14bb86",
+      "independent_build_sha256": "2a6c752fec601402ff033842e278f15e218717d38d8add0449c413f09c14bb86"
+    }
+  },
+  "scope": "independent recompilation/rendering of every family using frozen source inputs in the pinned environment"
+}

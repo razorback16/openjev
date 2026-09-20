@@ -1,0 +1,32 @@
+{
+  "train": {
+    "records": 512,
+    "slots": 1002,
+    "sha256": "d62d0287e238ddc5303d96c73181f1e4259be2c55145844e0baa1df79590491e",
+    "families": {
+      "public": 384,
+      "games": 64,
+      "native": 64
+    }
+  },
+  "validation": {
+    "records": 96,
+    "slots": 199,
+    "sha256": "e77a77043f2db223f1fba901cc28db12b40c952501644800000170470f84ee01",
+    "families": {
+      "public": 72,
+      "games": 12,
+      "native": 12
+    }
+  },
+  "calibration": {
+    "records": 48,
+    "slots": 95,
+    "sha256": "4ea82265aa915655ab46959d288a1905bb282ba1cdf23e0210fa127ff2ccfa5a",
+    "families": {
+      "public": 36,
+      "games": 6,
+      "native": 6
+    }
+  }
+}

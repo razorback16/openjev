@@ -1,0 +1,6 @@
+Pillow==12.3.0
+numpy==2.5.3
+requests==2.34.2
+transformers==5.17.0
+tokenizers==0.23.2
+# The schema audit imports the local OpenJev package and its normal dependencies.

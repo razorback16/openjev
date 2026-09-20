@@ -1,0 +1,15 @@
+{
+  "pod_id": "tg1qur9wns9hzu",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+  "gpu_count": 1,
+  "quoted_gpu_usd_per_hour": 2.09,
+  "observed_runpod_balance_decrease_usd": 0.5833808186000056,
+  "gemini_estimated_usd": 0.05181225,
+  "pod_deleted": true,
+  "remaining_pods": 0,
+  "current_spend_per_hour": 0,
+  "network_volumes_created": 0,
+  "provider_termination_deadline": "2026-09-20T11:08:59.162157+00:00",
+  "cleanup_verified_at": "2026-09-20T09:27:40.999992+00:00",
+  "billing_note": "Provider itemized billing returned empty at cleanup; reported cost is observed account balance delta."
+}
