@@ -146,6 +146,35 @@ def test_auth(tok, monkeypatch):
         assert c.get("/health").status_code == 200
 
 
+def test_non_ascii_credentials_are_rejected_not_crashed():
+    """hmac.compare_digest raises TypeError on a non-ASCII str, and a header is
+    latin-1 decoded: a credential with an accent in it was an unhandled 500."""
+    from types import SimpleNamespace
+
+    from openjev.api import check_auth
+
+    s = Settings(api_key="sk-test", origin_secret="s3")
+    r = check_auth(s, SimpleNamespace(headers={"x-origin-secret": "s€", "authorization": "Bearer sk-test"}))
+    assert r.status_code == 403
+    r = check_auth(s, SimpleNamespace(headers={"x-origin-secret": "s3", "authorization": "Bearer sk-t€st"}))
+    assert r.status_code == 401
+    assert check_auth(s, SimpleNamespace(headers={"x-origin-secret": "s3", "authorization": "Bearer sk-test"})) is None
+
+
+def test_settings_are_checked_at_startup():
+    """canvas_step=0 divided by zero on the first read, and a 0 semaphore never
+    opened, so every request waited out its timeout. Both now fail at boot."""
+    for kw in ({"canvas": 0}, {"canvas_step": 0}, {"max_inflight": 0}, {"gen_max_inflight": 0},
+               {"max_questions": 0}, {"max_body_bytes": 0}, {"max_queue": -1}, {"forward_timeout": 0}):
+        with pytest.raises(ValueError):
+            Settings(**kw)
+
+
+def test_forward_timeout_is_configurable(tok):
+    with TestClient(create_app(Settings(forward_timeout=12.5), tokenizer=tok)) as c:
+        assert c.app.state.routes.timeout.read == 12.5
+
+
 def test_confidence():
     assert confidence([1.0, 0.0, 0.0]) == 1.0
     assert confidence([0.5, 0.5]) == pytest.approx(0.0)
@@ -200,6 +229,42 @@ def test_image_validation(client):
                            ([f"data:image/png;base64,{PNG}"] * 9, "at most 8")]:
         r = client.post("/v1/systemone", json=dict(EXAMPLE, images=images))
         assert r.status_code == 400 and needle in r.json()["detail"], (images, r.text)
+    # URLs were never accepted; the error must not claim they are
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, images=["https://example.com/a.png"]))
+    assert "URL" not in r.json()["detail"]
+
+
+def test_oversize_image_is_refused_before_decoding(client):
+    """The size limit used to be checked only after a full base64 decode, so a
+    request could spend a hundred times the limit in memory to be told no."""
+    big = "QUFB" * (2 * 1024 * 1024)  # 8 MB of base64, decodes to 6 MB: over the 5 MB default
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, images=[{"content_type": "image/png", "base64": big}]))
+    assert r.status_code == 400 and "larger than" in r.json()["detail"]
+    big = f"data:image/png;base64,{big}"
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, images=[big]))
+    assert r.status_code == 400 and "larger than" in r.json()["detail"]
+
+
+def test_request_body_is_capped(tok):
+    """Neither uvicorn nor FastAPI bounds a body; a giant one is a 413 now, and
+    a small one still goes through (to a 503 here: no vLLM is listening)."""
+    with TestClient(create_app(Settings(max_body_bytes=512), tokenizer=tok)) as c:
+        r = c.post("/v1/systemone", json=EXAMPLE)  # the quickstart body is over 512 bytes
+        assert r.status_code == 413 and "512" in r.json()["detail"]["message"]
+        small = {"state": "x", "model": "jev-latest", "questions": {"a": {"type": "noul"}}}
+        assert c.post("/v1/systemone", json=small).status_code == 503
+        assert c.get("/v1/models").status_code == 200
+
+
+def test_questions_are_capped(client):
+    """A request's questions fan out into canvas-sized groups, each a read of
+    its own; one body must not be unbounded work."""
+    qs = {f"q{i}": {"type": "noul", "instructions": "x"} for i in range(257)}
+    r = client.post("/v1/systemone", json=dict(EXAMPLE, questions=qs))
+    assert r.status_code == 400 and r.json()["detail"] == "at most 256 questions per request"
+    assert client.reads == []
+    qs.pop("q256")
+    assert client.post("/v1/systemone", json=dict(EXAMPLE, questions=qs)).status_code == 200
 
 
 def test_options_default_to_jevs_behaviour(client):
@@ -352,6 +417,62 @@ def test_chat_passes_upstream_errors(tok):
     c = chat_client(tok, lambda request: httpx_response({"error": {"message": "prompt too long"}}, 400))
     r = c.post("/v1/chat/completions", json={"model": "diffusiongemma-26b", "messages": [{"role": "user", "content": "hi"}]})
     assert r.status_code == 400 and r.json()["error"]["message"] == "prompt too long"
+
+
+def test_chat_upstream_error_is_truncated(tok):
+    """A proxy in front of vLLM can answer with a whole HTML error page; as in
+    the read path, that is not the client's business."""
+    c = chat_client(tok, lambda request: httpx_response({"error": {"message": "x" * 5000}}, 502))
+    r = c.post("/v1/chat/completions", json={"model": "diffusiongemma-26b", "messages": [{"role": "user", "content": "hi"}]})
+    assert r.status_code == 503 and len(r.json()["error"]["message"]) <= 500
+
+
+def test_chat_max_tokens_must_be_an_integer(tok):
+    """int("abc") crashed the route with a 500, and True and 3.9 were silently
+    read as 1 and 3. A non-integer limit is a 400 now."""
+    sent = []
+
+    def handler(request):
+        sent.append(_json.loads(request.content))
+        return httpx_response({"id": "x", "model": "dgemma", "choices": [], "usage": {}})
+
+    c = chat_client(tok, handler)
+    msg = {"model": "diffusiongemma-26b", "messages": [{"role": "user", "content": "hi"}]}
+    for bad in ("abc", True, 3.9):
+        r = c.post("/v1/chat/completions", json=dict(msg, max_tokens=bad))
+        assert r.status_code == 400 and "max_tokens" in r.json()["error"]["message"], (bad, r.text)
+    r = c.post("/v1/chat/completions", json=dict(msg, max_completion_tokens="50"))
+    assert r.status_code == 400
+    assert c.post("/v1/chat/completions", json=dict(msg, max_completion_tokens=50)).status_code == 200
+    assert sent[0]["max_tokens"] == 50
+
+
+def test_chat_model_is_required(tok):
+    c = chat_client(tok, lambda request: httpx_response({}))
+    msg = {"messages": [{"role": "user", "content": "hi"}]}
+    assert c.post("/v1/chat/completions", json=msg).status_code == 400
+    assert c.post("/v1/chat/completions", json=dict(msg, model=42)).status_code == 400
+    assert c.post("/v1/chat/completions", json=dict(msg, model="gpt-4")).status_code == 404
+
+
+def test_a_cancelled_wait_for_a_chat_slot_leaks_no_capacity():
+    """stream() counted the request, then waited for a slot. A client that went
+    away while waiting kept its count forever, and enough of them 529'd the
+    server for good."""
+    from openjev.chat import Generator
+
+    async def main():
+        gen = Generator(Settings(gen_max_inflight=1))
+        gen.slots = asyncio.Semaphore(0)  # never opens: every stream waits
+        waits = [asyncio.ensure_future(gen.stream({"messages": []}, None)) for _ in range(3)]
+        await asyncio.sleep(0.01)
+        for t in waits:
+            t.cancel()
+        await asyncio.gather(*waits, return_exceptions=True)
+        await gen.close()
+        return gen.running
+
+    assert asyncio.run(main()) == 0
 
 
 def httpx_response(body, status=200):
