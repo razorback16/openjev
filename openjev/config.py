@@ -19,6 +19,12 @@ class Settings:
     canvas_step: int = field(default_factory=lambda: int(_env("OPENJEV_CANVAS_STEP", "16")))
     max_inflight: int = field(default_factory=lambda: int(_env("OPENJEV_MAX_INFLIGHT", "64")))
     max_queue: int = field(default_factory=lambda: int(_env("OPENJEV_MAX_QUEUE", "512")))
+    # Per-request bounds, so one body cannot fan out into unbounded work or memory.
+    max_questions: int = field(default_factory=lambda: int(_env("OPENJEV_MAX_QUESTIONS", "256")))
+    max_body_bytes: int = field(default_factory=lambda: int(_env("OPENJEV_MAX_BODY_BYTES", str(64 * 1024 * 1024))))
+    # Seconds before a request passed through to another OpenJev container is a 503:
+    # a heavy read (samples x groups, a long thought) can legitimately take minutes.
+    forward_timeout: float = field(default_factory=lambda: float(_env("OPENJEV_FORWARD_TIMEOUT", "300")))
     # Optional auth. OPENJEV_API_KEY: clients send it as a Bearer token.
     # OPENJEV_ORIGIN_SECRET: a front proxy sends it as X-Origin-Secret.
     api_key: str = field(default_factory=lambda: _env("OPENJEV_API_KEY", ""))
@@ -51,6 +57,22 @@ class Settings:
     # Other System One models served by other OpenJev containers: "name=url,name=url".
     # A request for one of them is passed through unchanged, so one origin serves all.
     model_routes: dict = field(default_factory=lambda: parse_routes(_env("OPENJEV_MODEL_ROUTES", "")))
+
+    def __post_init__(self):
+        """Refuse values a bad environment would otherwise turn into 500s or hangs:
+        canvas_step=0 divides by zero on the first read, and a semaphore built with
+        0 never opens, so every request would wait out its timeout instead of a 529."""
+        positive = ("canvas", "canvas_step", "max_inflight", "max_questions", "max_body_bytes",
+                    "max_image_bytes", "gen_max_inflight", "gen_max_tokens", "mlx_max_prompt",
+                    "encoder_batch", "clm_workers", "jevk5_workers", "forward_timeout")
+        for name in positive:
+            if getattr(self, name) < 1:
+                raise ValueError(f"{name} must be at least 1, got {getattr(self, name)!r} "
+                                 f"(OPENJEV_{name.upper()})")
+        for name in ("max_queue", "gen_max_queue", "max_images"):
+            if getattr(self, name) < 0:
+                raise ValueError(f"{name} must not be negative, got {getattr(self, name)!r} "
+                                 f"(OPENJEV_{name.upper()})")
 
 
 def parse_routes(text):

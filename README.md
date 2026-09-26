@@ -465,6 +465,7 @@ The server reads its settings from the environment.
 |---|---|---|
 | `OPENJEV_BACKEND` | `vllm` | `mlx` to run the model in-process on Apple silicon. `laya` or `verdict` for a [small encoder model](#small-encoder-models), `clm` for [CLM](#clm), `jevk5` for [JevK5](#jevk5) |
 | `OPENJEV_MODEL_ROUTES` | unset | `name=url,...`: other OpenJev servers. A request for one of these model names goes to that server unchanged. |
+| `OPENJEV_FORWARD_TIMEOUT` | `300` | seconds before a request forwarded to another OpenJev server is a 503 |
 | `OPENJEV_LAYA_MODEL` | `convaiinnovations/laya-typed-decisions` | Laya weights: a local directory or a Hugging Face id |
 | `OPENJEV_VERDICT_MODEL` | `heman10x/rlcd-modernbert-151m` | Verdict weights: a local directory or a Hugging Face id |
 | `OPENJEV_DEVICE` | unset | `laya`/`verdict`/`clm`: `cuda` or `cpu` (for `clm`, the heads). Unset uses CUDA when a GPU is present |
@@ -486,6 +487,8 @@ The server reads its settings from the environment.
 | `OPENJEV_CANVAS` | `64` | canvas length. Also sets the built-in vLLM's `--diffusion-config` |
 | `OPENJEV_MAX_INFLIGHT` | `64` | reads in flight to vLLM |
 | `OPENJEV_MAX_QUEUE` | `512` | waiting decisions before the server returns 529 |
+| `OPENJEV_MAX_QUESTIONS` | `256` | questions per request, before a 400 |
+| `OPENJEV_MAX_BODY_BYTES` | `67108864` | request body size limit, before a 413 |
 | `OPENJEV_API_KEY` | unset | require `Authorization: Bearer <key>` |
 | `OPENJEV_ORIGIN_SECRET` | unset | require an `X-Origin-Secret` header (for use behind a proxy) |
 | `OPENJEV_MAX_IMAGES` | `8` | images per request. Also sets the built-in vLLM's `--limit-mm-per-prompt` |
