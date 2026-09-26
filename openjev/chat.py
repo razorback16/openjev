@@ -53,12 +53,17 @@ class Generator:
 
     def normalize(self, body):
         """The vLLM request for an OpenAI-style one, and whether the caller
-        asked for JSON."""
+        asked for JSON. Raises ValueError (a 400) for a max_tokens that is not
+        an integer: int() used to crash the route on a string, and silently
+        turned True into 1 and 3.9 into 3."""
         out = {k: v for k, v in body.items() if k in PASSTHROUGH}
         out["model"] = self.s.upstream_model
-        if "max_tokens" not in out and isinstance(body.get("max_completion_tokens"), int):
-            out["max_tokens"] = body["max_completion_tokens"]
-        out["max_tokens"] = max(1, min(int(out.get("max_tokens") or DEFAULT_MAX_TOKENS), self.s.gen_max_tokens))
+        max_tokens = out.get("max_tokens", body.get("max_completion_tokens"))
+        if max_tokens is None:
+            max_tokens = DEFAULT_MAX_TOKENS
+        if not isinstance(max_tokens, int) or isinstance(max_tokens, bool):
+            raise ValueError(f"max_tokens must be an integer, got {max_tokens!r}")
+        out["max_tokens"] = max(1, min(max_tokens, self.s.gen_max_tokens))
         out["chat_template_kwargs"] = {"enable_thinking": False, **(out.get("chat_template_kwargs") or {})}
         if out.get("stream"):
             out["stream_options"] = {**(out.get("stream_options") or {}), "include_usage": True}
@@ -79,7 +84,13 @@ class Generator:
 
     async def stream(self, upstream, request):
         self.running += 1
-        await self.slots.acquire()
+        try:
+            await self.slots.acquire()
+        except BaseException:
+            # a client that goes away while waiting for a slot must not keep
+            # the capacity it never got; the count only grew, never shrank
+            self.running -= 1
+            raise
 
         def release():
             self.slots.release()
@@ -90,10 +101,16 @@ class Generator:
         except httpx.HTTPError as e:
             release()
             return oai_error(503, f"inference backend unavailable: {type(e).__name__}", "api_error", headers={"retry-after": "2"})
-        if r.status_code >= 400:
-            await r.aread()
-            await r.aclose()
+        except BaseException:
+            # cancelled mid-connect: the slot and the count were taken already
             release()
+            raise
+        if r.status_code >= 400:
+            try:
+                await r.aread()
+            finally:
+                await r.aclose()
+                release()
             return oai_error(400 if r.status_code < 500 else 503, upstream_message(r), "invalid_request_error" if r.status_code < 500 else "api_error")
 
         async def lines():
@@ -219,14 +236,31 @@ class MlxGenerator(Generator):
         queue = asyncio.Queue(maxsize=64)
         cancel = False
 
+        def end():
+            """Queue the end marker, making room if the buffer is full. A dropped
+            marker leaves the drain waiting on a queue nothing else will ever
+            fill: the request hung and the slot was never given back."""
+            while True:
+                try:
+                    queue.put_nowait(END)
+                    return
+                except asyncio.QueueFull:
+                    try:
+                        queue.get_nowait()
+                    except asyncio.QueueEmpty:
+                        pass
+
         def offer(text):
-            """Queue a chunk, on the event loop. A full queue means nobody is
-            reading, so the chunk is dropped rather than wedging the runtime; the
-            cancel that follows is what actually ends the reply."""
+            """Queue a chunk, on the event loop. A full queue means the reader is
+            gone or hopelessly behind; cancel the reply rather than wedge the
+            runtime, and rather than drop reply text a live client would never
+            know it lost."""
+            nonlocal cancel
             try:
                 queue.put_nowait(text)
             except asyncio.QueueFull:
-                pass
+                cancel = True
+                end()
 
         def emit(text, token):
             # called on the runtime thread: hand the chunk over and report whether
@@ -237,7 +271,12 @@ class MlxGenerator(Generator):
             return not cancel
 
         self.running += 1
-        await self.slots.acquire()
+        try:
+            await self.slots.acquire()
+        except BaseException:
+            # as in Generator.stream: a cancelled wait must return its count
+            self.running -= 1
+            raise
         cid, created = completion_id(), int(time.time())
         usage_wanted = (upstream.get("stream_options") or {}).get("include_usage")
 
@@ -264,10 +303,7 @@ class MlxGenerator(Generator):
                 await asyncio.sleep(0.1)
                 if await request.is_disconnected():
                     cancel = True
-                    try:
-                        queue.put_nowait(END)
-                    except asyncio.QueueFull:
-                        pass
+                    end()
                     return
 
         async def produce():
@@ -278,11 +314,7 @@ class MlxGenerator(Generator):
             try:
                 return await self.generate(prompt, upstream, emit)
             finally:
-                # a full queue means nobody is reading, so the drain has already left
-                try:
-                    queue.put_nowait(END)
-                except asyncio.QueueFull:
-                    pass
+                end()
 
         async def body():
             nonlocal cancel
@@ -366,9 +398,11 @@ def extract_json(text):
 def upstream_message(r):
     try:
         d = r.json()
-        return (d.get("error") or {}).get("message") or d.get("message") or r.text
+        msg = (d.get("error") or {}).get("message") or d.get("message") or r.text
     except ValueError:
-        return r.text
+        msg = r.text
+    # as Engine._post does: an upstream error page is not the client's business
+    return str(msg)[:500]
 
 
 def add_chat_routes(app):
@@ -381,11 +415,17 @@ def add_chat_routes(app):
             return oai_error(400, "The request body is not valid JSON.")
         if not isinstance(body, dict) or not isinstance(body.get("messages"), list) or not body["messages"]:
             return oai_error(400, "messages must be a non-empty array.")
-        if body.get("model") not in MODEL_NAMES:
-            return oai_error(404, f"Model {body.get('model')!r} not found. Available: {GEN_MODEL}.", code="model_not_found")
+        model = body.get("model")
+        if not isinstance(model, str):
+            return oai_error(400, "model is required and must be a string.")
+        if model not in MODEL_NAMES:
+            return oai_error(404, f"Model {model!r} not found. Available: {GEN_MODEL}.", code="model_not_found")
         if gen.running >= gen.s.gen_max_inflight + gen.s.gen_max_queue:
             return oai_error(529, "Text generation is at capacity. Retry shortly.", "overloaded_error", headers={"retry-after": "2"})
-        upstream, json_mode = gen.normalize(body)
+        try:
+            upstream, json_mode = gen.normalize(body)
+        except ValueError as e:
+            return oai_error(400, str(e))
         if upstream.get("stream"):
             return await gen.stream(upstream, request)
         return await gen.complete(upstream, json_mode)

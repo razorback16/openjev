@@ -93,11 +93,16 @@ def image_parts(images, settings):
             head, sep, data = im.partition(",")
             ctype = head.removeprefix("data:").removesuffix(";base64")
             if not (sep and head.startswith("data:") and head.endswith(";base64")):
-                raise SchemaError("an image is a data:image/...;base64, URL or {content_type, base64}", loc)
+                raise SchemaError("an image is a data:image/...;base64 string or a {content_type, base64} object", loc)
         else:
             ctype, data = im.content_type, im.base64
         if ctype not in IMAGE_TYPES:
             raise SchemaError(f"image type {ctype!r} is not supported; use JPEG, PNG, WebP or GIF", loc)
+        # The decoded size is 3 bytes per 4 base64 characters, minus padding. Reject
+        # on that bound first: a body can carry far more base64 than the limit, and
+        # decoding it to find out costs exactly the memory the limit exists to save.
+        if 3 * (len(data) // 4) - 2 > settings.max_image_bytes:
+            raise SchemaError(f"image data is larger than the {settings.max_image_bytes} byte limit", loc)
         try:
             size = len(base64.b64decode(data, validate=True))
         except (binascii.Error, ValueError):
@@ -162,7 +167,7 @@ def create_app(settings=None, tokenizer=None):
 
     @asynccontextmanager
     async def lifespan(app):
-        app.state.routes = httpx.AsyncClient(timeout=httpx.Timeout(60.0, connect=5.0))
+        app.state.routes = httpx.AsyncClient(timeout=httpx.Timeout(settings.forward_timeout, connect=5.0))
         if encoder:
             from .encoders import ENGINES
             app.state.engine = ENGINES[settings.backend](settings)
@@ -216,6 +221,16 @@ def create_app(settings=None, tokenizer=None):
                 denied.headers["x-typesafe-request-id"] = rid
                 denied.headers["x-request-id"] = rid
                 return denied
+            if request.method == "POST":
+                # Neither uvicorn nor FastAPI bounds a body. Read it here, past auth
+                # so an anonymous giant is refused before it costs any memory.
+                body = bytearray()
+                async for chunk in request.stream():
+                    body.extend(chunk)
+                    if len(body) > settings.max_body_bytes:
+                        return error(413, "api_usage_error",
+                                     f"request body is larger than {settings.max_body_bytes} bytes")
+                request._body = bytes(body)
         spent = [0]
         model_ns.set(spent)
         started = time.perf_counter_ns()
@@ -243,6 +258,11 @@ def create_app(settings=None, tokenizer=None):
         if req.model not in model_names:
             # Jev's shape for a model it doesn't serve
             return error(400, "api_usage_error", f"Unknown model: {req.model}")
+        if len(req.questions) > settings.max_questions:
+            # a request's questions fan out into canvas-sized groups, each a read of
+            # its own; without a cap one body is unbounded work for the model
+            return semantic_error(("body", "questions"),
+                                  f"at most {settings.max_questions} questions per request", request)
         questions = {k: q.model_dump() for k, q in req.questions.items()}
         options = {"steps": req.steps, "samples": req.samples, "think": req.think, "sequential": req.sequential}
         engine = request.app.state.engine
@@ -292,15 +312,17 @@ async def forward(request, url):
 
 
 def check_auth(settings, request):
+    # compare as bytes: compare_digest on str raises TypeError for non-ASCII,
+    # and a header is latin-1 decoded, so a non-ASCII credential was a 500
     if settings.origin_secret:
         got = request.headers.get("x-origin-secret", "")
-        if not hmac.compare_digest(got, settings.origin_secret):
+        if not hmac.compare_digest(got.encode(), settings.origin_secret.encode()):
             return error(403, "permission_error", "Direct access to this origin is not allowed.")
     if settings.api_key:
         auth = request.headers.get("authorization", "")
         if not auth:
             return error(403, "authentication_error", "Must supply an API key! Check your request and try again.")
         token = auth.removeprefix("Bearer ").strip()
-        if not hmac.compare_digest(token, settings.api_key):
+        if not hmac.compare_digest(token.encode(), settings.api_key.encode()):
             return error(401, "authentication_error", "Cannot authenticate with the server. Please check your API key and try again.")
     return None

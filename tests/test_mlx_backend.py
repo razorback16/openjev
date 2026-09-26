@@ -403,6 +403,63 @@ def test_a_disconnected_client_stops_generation(tok, monkeypatch):
         assert gen.running == 0 and gen.slots._value == Settings().gen_max_inflight
 
 
+def test_a_slow_reader_cancels_rather_than_loses_chunks(tok, monkeypatch):
+    """64 chunks of slack, then the buffer is full. Dropping the next chunk
+    silently would corrupt a reply a live client is still reading; the reply
+    must end instead, and give the slot back."""
+    import asyncio
+
+    monkeypatch.setattr(mlx_backend, "MlxRuntime", StubRuntime)
+    app = create_app(Settings(backend="mlx", mlx_model="/models/dg"), tokenizer=tok)
+    with TestClient(app):  # entered for the lifespan, which builds the generator
+        gen = app.state.generator
+
+        def generate(prompt, max_tokens, stop_ids, emit, skip_special=None):
+            for i in range(500):  # fast: no block-sized pause, so the buffer fills
+                if not emit(f" {i}", 1000 + i):
+                    return [1000], len(prompt), "cancelled"
+            return [1000], len(prompt), "stop"
+
+        monkeypatch.setattr(app.state.engine.runtime, "generate", generate)
+        upstream, _ = gen.normalize(dict(CHAT, stream=True))
+
+        class Here:
+            """A request whose client is still connected, just slow."""
+
+            async def is_disconnected(self):
+                return False
+
+        async def drain():
+            r = await gen.stream(upstream, Here())
+            it = r.body_iterator
+            seen = []
+            try:
+                while True:
+                    seen.append(await it.__anext__())
+                    if len(seen) == 10:
+                        await asyncio.sleep(2)  # let the runtime outrun us and fill the buffer
+            except StopAsyncIteration:
+                pass
+            await it.aclose()
+            # the slot comes back from a task of its own, once the runtime stops
+            for _ in range(2000):
+                if gen.running == 0:
+                    break
+                await asyncio.sleep(0.005)
+            return seen
+
+        seen = asyncio.run(drain())
+        assert not any("[DONE]" in s for s in seen), "a cancelled reply must not look complete"
+        chunks = [_json.loads(s[6:])["choices"][0]["delta"].get("content", "")
+                  for s in seen if s.startswith("data: ")]
+        got = [int(t) for t in "".join(chunks).split()]
+        assert got and len(got) < 500, "the reply ran to completion despite a reader 64 chunks behind"
+        # strictly increasing: nothing was silently dropped while the reply ran on
+        # (one queued chunk may be displaced by the end marker as it cancels)
+        assert got == sorted(set(got))
+        assert gen.running == 0 and gen.slots._value == Settings().gen_max_inflight
+
+
 # The marker tokens for the thought channel the model sometimes opens on its own.
 # The detokenizer NEVER hands these out as their own segments: it buffers them and
 # flushes them fused into a later token's text, so anything keyed on token ids alone
