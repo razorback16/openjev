@@ -15,3 +15,8 @@ skills-lock.json
 
 # a library does not pin a resolved environment
 uv.lock
+
+# ForJev local environment and process state
+.venv-forjev/
+.forjev.env
+.forjev-run/
