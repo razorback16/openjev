@@ -167,10 +167,15 @@ def create_app(settings=None, tokenizer=None):
 
     @asynccontextmanager
     async def lifespan(app):
-        app.state.routes = httpx.AsyncClient(timeout=httpx.Timeout(settings.forward_timeout, connect=5.0))
+        app.state.routes = httpx.AsyncClient(timeout=httpx.Timeout(settings.forward_timeout, connect=5.0),
+                                            trust_env=settings.backend != "forjev")
         if encoder:
             from .encoders import ENGINES
-            app.state.engine = ENGINES[settings.backend](settings)
+            if settings.backend == "forjev":
+                from .forjev import ForJevEngine
+                app.state.engine = ForJevEngine(settings)
+            else:
+                app.state.engine = ENGINES[settings.backend](settings)
             yield
             await app.state.engine.close()
             await app.state.routes.aclose()
@@ -239,6 +244,10 @@ def create_app(settings=None, tokenizer=None):
 
     @app.get("/v1/models")
     async def models():
+        if settings.backend == "forjev":
+            entries = models_list + [{"name": settings.upstream_model, "description": "Upstream Qwen chat model", "release_date": ""}]
+            return {"models": entries, "object": "list", "data": [
+                {"id": m["name"], "object": "model", "owned_by": "forjev"} for m in entries]}
         return {"models": models_list}
 
     @app.post("/v1/systemone")
@@ -274,7 +283,10 @@ def create_app(settings=None, tokenizer=None):
         return {"model": model_version, "answers": answers,
                 "usage": {"input_tokens": input_tokens, "output_tokens": thought_tokens}}
 
-    if not encoder:
+    if settings.backend == "forjev":
+        from .forjev_proxy import add_forjev_routes
+        add_forjev_routes(app, settings)
+    elif not encoder:
         add_chat_routes(app)
 
     return app

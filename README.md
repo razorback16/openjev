@@ -1,3 +1,12 @@
+> **ForJev backend:** use an existing Qwen/vLLM endpoint without loading another model.
+> See [ForJev setup, API requirements and examples](README-ForJev.md).
+> Default deployment: OpenJEV/ForJev on `:8001`, existing Qwen on `:8000`.
+> Run `bash setup-forjev.sh` then `bash restart-forjev.sh start`.
+> The default uses candidate chat logprobs. Experimental prefill-only scoring
+> requires a compatible vLLM serving patch and restart; see
+> [scoring modes and serving requirements](docs/decision-scores.md).
+> The Docker instructions below describe upstream DiffusionGemma, not the ForJev setup.
+
 # OpenJev
 
 **Fast, calibrated, typed decisions from an open model.** OpenJev is an open-source
@@ -21,6 +30,7 @@ OpenJev is an independent project. It is not affiliated with or endorsed by Type
 
 | Model id | Model | Size | Input | Choices | Runs on |
 |---|---|---|---|---|---|
+| `forjev-qwen-next` | [ForJev 0.1.0](README-ForJev.md), existing Qwen/vLLM endpoint | No additional weights | text and images | 20 default; up to 255 after capability checks | CPU HTTP adapter + existing vLLM |
 | `openjev-latest` (`openjev-0.1`) | [DiffusionGemma 26B-A4B](https://huggingface.co/nvidia/diffusiongemma-26B-A4B-it-NVFP4) (NVIDIA / Google), read as a diffusion canvas | 26B total, 4B active | text and images | up to 255 | vLLM (NVIDIA GPU) or MLX (Apple silicon) |
 | `laya-1.0` | [Laya](https://github.com/NandhaKishorM/laya) by Nandakishor M / Convai Innovations | 421M | text, 1,024 tokens | up to 255 | PyTorch, GPU or CPU |
 | `verdict-1.4` | [Verdict](https://github.com/Heman10x-NGU/Verdict-open-jev) by Heman10x | 151M | text, 512 tokens | up to 24 | PyTorch, GPU or CPU |

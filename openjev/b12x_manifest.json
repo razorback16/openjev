@@ -1,0 +1,25 @@
+{
+  "version": "0.1.dev20759+gb40673cd0.d20260913",
+  "files": {
+    "v1/core/sched/scheduler.py": {
+      "original": "5067f0e95eae39a900f21f3ed841877ccfcf711c3a775804137c00b542c410a7",
+      "patched": "d8c8fffad37273efbe756480cc5bcbccb196ff36cfbc250826f2d2aac29dc93a"
+    },
+    "v1/core/sched/async_scheduler.py": {
+      "original": "d58ca33d48fb1eeddd7165327ea367be88752982023d58f0f831a0b90fad2c50",
+      "patched": "fb99f26b4e0eda89a90cce0d08c4eaaebcf1d305ec8e6a7e54413b827854ab8d"
+    },
+    "v1/worker/gpu/model_runner.py": {
+      "original": "a7394c88cfd7400b6c21972da2ef194a3e75043b58b4dd0eb7ea274951402070",
+      "patched": "2fda6159d18f9f14fabb5538cb9b5465d349a0ed26cee59d37fc66e61e9294d5"
+    },
+    "v1/engine/output_processor.py": {
+      "original": "f46abafd45792b4816e75c0702113b510f4b3e15ea33016d155ee00abaa3fb59",
+      "patched": "f25ef3fe86a9b9153e7befa9e3d00b4ff256d68bf458ac0ef2f11f2a4a27846f"
+    },
+    "entrypoints/launchers/app.py": {
+      "original": "1f1ea5b79688cc042d9418435e84a6d04c17a46f6de6a98e560fe2f2ac5eeca4",
+      "patched": "f77fdda248e80250300e29b56c493f7f98502e47dff615c89124d5b6e0ffb791"
+    }
+  }
+}
