@@ -31,7 +31,8 @@ class Settings:
     gen_max_inflight: int = field(default_factory=lambda: int(_env("OPENJEV_GEN_MAX_INFLIGHT", "8")))
     gen_max_queue: int = field(default_factory=lambda: int(_env("OPENJEV_GEN_MAX_QUEUE", "32")))
     gen_max_tokens: int = field(default_factory=lambda: int(_env("OPENJEV_GEN_MAX_TOKENS", "8192")))
-    # The encoder backends (OPENJEV_BACKEND=laya, verdict, clm or jevk5). OPENJEV_DEVICE empty picks CUDA when present.
+    # The encoder backends (OPENJEV_BACKEND=laya, verdict, clm, jevk5 or d1). OPENJEV_DEVICE empty picks CUDA when
+    # present (and, for d1, Apple silicon's MPS next).
     laya_model: str = field(default_factory=lambda: _env("OPENJEV_LAYA_MODEL", "convaiinnovations/laya-typed-decisions"))
     verdict_model: str = field(default_factory=lambda: _env("OPENJEV_VERDICT_MODEL", "heman10x/rlcd-modernbert-151m"))
     device: str = field(default_factory=lambda: _env("OPENJEV_DEVICE", ""))
@@ -47,6 +48,15 @@ class Settings:
     # jevk5_config.json holds the calibration temperature.
     jevk5_model: str = field(default_factory=lambda: _env("OPENJEV_MODEL", "alibiserikbay/JevK5"))
     jevk5_workers: int = field(default_factory=lambda: int(_env("OPENJEV_JEVK5_WORKERS", "32")))
+    # d1 (OPENJEV_BACKEND=d1): Liquid AI's d1-2B through Transformers. Its repo's own Python runs
+    # (trust_remote_code), so it is pinned to a revision. Requests waiting together are read in one
+    # batch of at most OPENJEV_D1_BATCH requests and OPENJEV_D1_BATCH_CHARS characters of state. Measured on an
+    # M-series CPU with re-ranker passages: 8 at once took 0.41 s a request against 1.19 s alone, but 16 took
+    # 6.9 s a request, so the default is 8. Measure again on the GPU that serves it.
+    d1_model: str = field(default_factory=lambda: _env("OPENJEV_D1_MODEL", "LiquidAI/d1-2B"))
+    d1_revision: str = field(default_factory=lambda: _env("OPENJEV_D1_REVISION", "652f920e544ea37f81e4b0ce89b81d4ed0da90b1"))
+    d1_batch: int = field(default_factory=lambda: int(_env("OPENJEV_D1_BATCH", "8")))
+    d1_batch_chars: int = field(default_factory=lambda: int(_env("OPENJEV_D1_BATCH_CHARS", "120000")))
     warmup: bool = field(default_factory=lambda: _env("OPENJEV_WARMUP", "1") != "0")
     # Other System One models served by other OpenJev containers: "name=url,name=url".
     # A request for one of them is passed through unchanged, so one origin serves all.
@@ -101,6 +111,12 @@ ENCODER_MODELS = {
                              "LoRA distilled from Qwen3.6-27B, merged, read as a softmax over the answer letters' "
                              "logits (SemIf's readout), on vLLM. Text only, 16,384 tokens.",
               "release_date": "2026-09-25"},
+    "d1": {"name": "d1-2b",
+           "description": "d1-2B by Liquid AI (huggingface.co/LiquidAI/d1-2B, LFM Open License v1.0: free for "
+                          "commercial use below US$10M annual revenue): an LFM3 model (1.92B) trained to answer "
+                          "System One questions, with its own calibration, through Transformers. Text only here, "
+                          "128K tokens.",
+           "release_date": "2026-11-10"},
 }
 
 

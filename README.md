@@ -26,10 +26,13 @@ OpenJev is an independent project. It is not affiliated with or endorsed by Type
 | `verdict-1.4` | [Verdict](https://github.com/Heman10x-NGU/Verdict-open-jev) by Heman10x | 151M | text, 512 tokens | up to 24 | PyTorch, GPU or CPU |
 | `clm-v0.1` | [CLM](https://github.com/Contrastive-LM/CLM) by Contrastive-LM: contrastive heads over Qwen3-8B | 8B + 2 × 9.4M | text, 2,048 tokens | up to 255 | vLLM (NVIDIA GPU) |
 | `jevk5-0.2` | [JevK5](https://github.com/allebee/jevk5) by Alibi Serikbay: Qwen3.5-4B with a distilled LoRA, read by its answer letters | 4B | text, 16,384 tokens | up to 255 | vLLM (NVIDIA GPU) |
+| `d1-2b` | [d1-2B](https://huggingface.co/LiquidAI/d1-2B) by Liquid AI: an LFM3 model trained to answer System One questions | 1.92B | text here, 128K tokens | up to 255 | Transformers (Apple silicon, NVIDIA GPU or CPU) |
 
 `diffusiongemma-26b` is the same DiffusionGemma for [text generation](#text-generation). All
-weights are Apache-2.0. Laya, Verdict, CLM and JevK5 are other people's models: see
-[Small encoder models](#small-encoder-models), [CLM](#clm) and [JevK5](#jevk5) for details and credit.
+weights are Apache-2.0 except d1-2B's, which are under Liquid AI's LFM Open License (see [d1-2B](#d1-2b)).
+Laya, Verdict, CLM, JevK5 and d1-2B are other people's models: see
+[Small encoder models](#small-encoder-models), [CLM](#clm), [JevK5](#jevk5) and [d1-2B](#d1-2b) for
+details and credit.
 
 ## Try it
 
@@ -457,17 +460,75 @@ Differences from the other models:
 - The image sets `VLLM_USE_FLASHINFER_SAMPLER=0`. A read takes one greedy token and keeps only
   logprobs, and FlashInfer's sampler would need a CUDA compiler the image does not have.
 
+### d1-2B
+
+[d1-2B](https://huggingface.co/LiquidAI/d1-2B) is Liquid AI's model; the credit is theirs. It is an
+LFM3 model (1.92B parameters, 128K-token context) trained to answer System One questions, and its
+own code (`model.system_one`) answers in Jev's shapes with its own readouts and calibration.
+OpenJev passes those answers through unchanged. It is not on Liquid's hosted API.
+
+**License.** The weights are under the [LFM Open License v1.0](https://huggingface.co/LiquidAI/d1-2B/blob/main/LICENSE),
+not Apache-2.0: commercial use is licensed only for an organization below US$10 million in annual
+revenue. Check it applies to you.
+
+**Remote code.** d1 runs Python from its Hugging Face repo (`trust_remote_code`), so the server
+loads one pinned revision (`OPENJEV_D1_REVISION`). Read that code before you move the pin.
+
+On a Mac it runs in the OpenJev process on the GPU (MPS) in bf16, about 4 GB of weights:
+
+```bash
+pip install -e '.[d1]'
+OPENJEV_BACKEND=d1 OPENJEV_PORT=8092 python -m openjev     # 127.0.0.1:8092, model d1-2b
+```
+
+The first start downloads the weights. After that, `HF_HUB_OFFLINE=1` keeps it from reaching
+Hugging Face. To keep it running on a Mac that serves other things, `deploy/macos/openjev-d1.plist`
+is a launchd job that starts it at login and restarts it if it exits.
+
+**Batching.** Requests that arrive while the model is busy are read together in one
+`system_one_batch` call, at most `OPENJEV_D1_BATCH` requests (default 8). A re-ranker that sends a
+pool of passages at once, one request each, is read in a few passes instead of one per passage.
+Answers are the same batched or alone. Measured on an M-series CPU with 2,000-character passages:
+
+| Batch | Per request |
+|---:|---:|
+| 1 | 1.19 s |
+| 8 | 0.41 s |
+| 16 | 6.87 s |
+
+Past 8 the CPU slows sharply, so the default is 8. The GPU will differ: measure there before you
+raise it. A request the model refuses (a 400) fails alone; the rest of its batch is read again
+without it.
+
+How it compared with TypeSafe's Jev in one user's tests (2026-11-09), for a sense of where it fits:
+
+| Task | d1-2B | Jev | Others |
+|---|---:|---:|---|
+| Search re-ranking, labeled passage found (9 cases, 3 trials) | 0.889 | not run | Strands Decider 0.74, gemma4:26b generative 0.926 |
+| Message gate (51 records), cutoff 0.8 | 0.902 | 0.961 | Strands Decider 0.922 |
+
+Differences from the other models:
+
+- Text only. d1 reads pictures, audio and video, but OpenJev does not pass them to it yet, so
+  `images` gets a 400.
+- A yes/no cutoff tuned for Jev may not suit it: on the message gate above, d1 scored 0.843 at
+  0.5 and 0.902 at 0.8.
+
 ### Settings
 
 The server reads its settings from the environment.
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `OPENJEV_BACKEND` | `vllm` | `mlx` to run the model in-process on Apple silicon. `laya` or `verdict` for a [small encoder model](#small-encoder-models), `clm` for [CLM](#clm), `jevk5` for [JevK5](#jevk5) |
+| `OPENJEV_BACKEND` | `vllm` | `mlx` to run the model in-process on Apple silicon. `laya` or `verdict` for a [small encoder model](#small-encoder-models), `clm` for [CLM](#clm), `jevk5` for [JevK5](#jevk5), `d1` for [d1-2B](#d1-2b) |
 | `OPENJEV_MODEL_ROUTES` | unset | `name=url,...`: other OpenJev servers. A request for one of these model names goes to that server unchanged. |
 | `OPENJEV_LAYA_MODEL` | `convaiinnovations/laya-typed-decisions` | Laya weights: a local directory or a Hugging Face id |
 | `OPENJEV_VERDICT_MODEL` | `heman10x/rlcd-modernbert-151m` | Verdict weights: a local directory or a Hugging Face id |
-| `OPENJEV_DEVICE` | unset | `laya`/`verdict`/`clm`: `cuda` or `cpu` (for `clm`, the heads). Unset uses CUDA when a GPU is present |
+| `OPENJEV_DEVICE` | unset | `laya`/`verdict`/`clm`/`d1`: `cuda` or `cpu` (for `clm`, the heads), or `mps` for `d1`. Unset uses CUDA when a GPU is present, then (for `d1`) MPS |
+| `OPENJEV_D1_MODEL` | `LiquidAI/d1-2B` | `d1`: the weights, a Hugging Face id or a local directory |
+| `OPENJEV_D1_REVISION` | `652f920e…` | `d1`: the repo revision loaded, code included. Empty loads `main` |
+| `OPENJEV_D1_BATCH` | `8` | `d1`: the most requests read in one call |
+| `OPENJEV_D1_BATCH_CHARS` | `120000` | `d1`: the most characters of state in one call. A larger request is read alone. |
 | `OPENJEV_ENCODER_BATCH` | `16` | `laya`/`verdict`: the most questions in one forward pass. A larger request uses more passes. |
 | `OPENJEV_CLM_HEAD` | `Contrastive-LM/CLM-v0.1-8B` | `clm`: the heads, a Hugging Face repo holding `CLM_v0.1-8B.pt` or a local `.pt` file |
 | `OPENJEV_CLM_MAX_TOKENS` | `2048` | `clm`: longest text sent to Qwen3-8B. A longer one loses its start. |
@@ -522,4 +583,6 @@ option, images, chat, and the encoder models that the server lists.
 
 Apache-2.0. The DiffusionGemma weights are Apache-2.0 (NVIDIA / Google). Laya
 (Nandakishor M / Convai Innovations) and Verdict (Heman10x) are Apache-2.0, weights and code.
+d1-2B (Liquid AI) is under the LFM Open License v1.0, weights and code; OpenJev does not
+include either and downloads them from Hugging Face.
 `openjev/encoders.py` adapts Verdict's prompt format and calibration from its repository.

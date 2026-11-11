@@ -14,6 +14,8 @@ mlx = ["mlx-vlm==0.6.15; sys_platform == 'darwin' and platform_machine == 'arm64
 # The small encoder models (OPENJEV_BACKEND=laya or verdict); both need PyTorch
 laya = ["laya==0.3.6"]
 verdict = ["gliclass==0.1.20"]
+# Liquid AI's d1-2B (OPENJEV_BACKEND=d1), at the versions it was evaluated with
+d1 = ["transformers==5.22.2", "torch==2.15.0", "torchvision==0.29.2", "pillow==13.0.0"]
 
 [project.urls]
 Homepage = "https://codiv.ai"

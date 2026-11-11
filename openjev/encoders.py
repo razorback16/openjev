@@ -1,6 +1,6 @@
-"""Small System One models: Laya, Verdict, CLM and JevK5, one per container.
+"""Small System One models: Laya, Verdict, CLM, JevK5 and d1, one per container (or process).
 
-Selected with OPENJEV_BACKEND=laya, verdict, clm or jevk5. Laya and Verdict read the
+Selected with OPENJEV_BACKEND=laya, verdict, clm, jevk5 or d1. Laya and Verdict read the
 questions of a request in batched forward passes of a bidirectional encoder and
 a classification head, one sequence per question; CLM scores each option against
 the state with contrastive heads; JevK5 reads its answer letters' logits. Either way an
@@ -27,6 +27,9 @@ the answer shapes are shared with the vLLM backend; only the read differs.
   softmax over those letters' next-token logits under one calibration temperature
   (SemIf's readout). vLLM in the same container returns the letters' logprobs;
   the prompt and the reading of more than 16 options are the `jevk5` package's own.
+- d1-2b: d1-2B by Liquid AI (huggingface.co/LiquidAI/d1-2B, LFM Open License v1.0),
+  through Transformers with the repo's own code at a pinned revision. d1 answers in
+  Jev's shapes itself, so its answers are passed through; see D1Engine.
 
 None of these models has images, denoise steps, noise draws or a thought, so those
 request options are refused with a 400. torch, gliclass, laya, clm and
@@ -129,8 +132,8 @@ class EncoderEngine:
                        "legend": list(crit) if kind == "score" else None})
         return qs, forced
 
-    async def decide(self, questions, state, seed, images=None, options=None):
-        """Engine.decide's contract. ``seed`` is unused: a read is deterministic."""
+    def refuse_unsupported(self, images, options):
+        """A 400 for images and the DiffusionGemma read options, which no encoder has."""
         opts = options or {}
         unsupported = [("images", bool(images)), ("steps", (opts.get("steps") or 1) > 1),
                        ("samples", (opts.get("samples") or 1) > 1), ("think", bool(opts.get("think"))),
@@ -138,6 +141,10 @@ class EncoderEngine:
         for field, used in unsupported:
             if used:
                 raise SchemaError(f"{self.model_name} does not support {field}", ("body", field))
+
+    async def decide(self, questions, state, seed, images=None, options=None):
+        """Engine.decide's contract. ``seed`` is unused: a read is deterministic."""
+        self.refuse_unsupported(images, options)
         if self.waiting >= self.s.max_queue:
             raise Overloaded(f"{self.model_name} is at capacity. Retry shortly.")
         qs, forced = self.build_schema(questions)
@@ -442,4 +449,112 @@ def jevk5_temperature(model):
         return float(json.load(f)["temperature"])
 
 
-ENGINES = {"laya": LayaEngine, "verdict": VerdictEngine, "clm": ClmEngine, "jevk5": JevK5Engine}
+class D1Engine(EncoderEngine):
+    """Liquid AI's d1-2B through Transformers, on Apple silicon (MPS), CUDA or the CPU.
+
+    d1 answers System One questions itself (`model.system_one`) in Jev's shapes, with its own
+    readouts and calibration, so its answers are passed through, not re-read from probabilities.
+    Requests that arrive while the model is busy are read together in one
+    `system_one_batch` call: a re-ranker sends a whole candidate pool at once, one passage per
+    request, and a batch reads it in one pass instead of thirty."""
+
+    model_name = "d1-2b"
+
+    def __init__(self, settings):
+        self.pending = []  # (state, questions, future), oldest first
+        self.draining = False
+        super().__init__(settings)
+
+    def load(self):
+        import torch
+        from transformers import AutoModel
+
+        device = self.s.device or ("cuda" if torch.cuda.is_available()
+                                   else "mps" if torch.backends.mps.is_available() else "cpu")
+        dtype = torch.float32 if device == "cpu" else torch.bfloat16
+        # trust_remote_code runs the model repo's own Python, so it is pinned to a revision
+        self.model = AutoModel.from_pretrained(self.s.d1_model, revision=self.s.d1_revision or None,
+                                               trust_remote_code=True, dtype=dtype).to(device).eval()
+        log.info("d1: %s@%s on %s", self.s.d1_model, self.s.d1_revision or "main", device)
+
+    def read(self, state, qs):
+        """Only the warmup read comes here; requests go through decide's batches."""
+        questions = {q["key"]: {k: q[k] for k in ("type", "instructions", "criteria") if q[k] is not None}
+                     for q in qs}
+        return [], self.read_requests([(state, questions)])[0]["usage"]["input_tokens"]
+
+    def read_requests(self, requests):
+        """d1's answers for (state, questions) requests. Runs on the model's thread."""
+        return self.model.system_one_batch(requests)
+
+    async def read_each(self, batch):
+        """Each request of a batch read alone: an answer, or the exception it raised."""
+        loop, out = asyncio.get_running_loop(), []
+        for state, questions, _ in batch:
+            try:
+                out.append((await loop.run_in_executor(self.pool, self.read_requests, [(state, questions)]))[0])
+            except Exception as e:
+                out.append(e)
+        return out
+
+    def next_batch(self):
+        """The oldest pending requests that fit OPENJEV_D1_BATCH and OPENJEV_D1_BATCH_CHARS; at least one."""
+        batch, chars = [], 0
+        for item in self.pending:
+            size = len(json.dumps(item[0], ensure_ascii=False)) if not isinstance(item[0], str) else len(item[0])
+            if batch and (len(batch) >= self.s.d1_batch or chars + size > self.s.d1_batch_chars):
+                break
+            batch.append(item)
+            chars += size
+        del self.pending[:len(batch)]
+        return batch
+
+    async def drain(self):
+        loop = asyncio.get_running_loop()
+        try:
+            while self.pending:
+                batch = self.next_batch()
+                try:
+                    results = await loop.run_in_executor(self.pool, self.read_requests,
+                                                         [(s, q) for s, q, _ in batch])
+                except Exception as e:
+                    # one bad request fails the whole call: read each alone, so only it fails
+                    results = [e] if len(batch) == 1 else await self.read_each(batch)
+                for (_, _, fut), out in zip(batch, results):
+                    if fut.done():
+                        continue
+                    if isinstance(out, ValueError):  # d1 refuses a question it cannot read, saying why
+                        fut.set_exception(SchemaError(f"{self.model_name}: {out}"))
+                    elif isinstance(out, Exception):
+                        fut.set_exception(out)
+                    else:
+                        fut.set_result(out)
+        finally:
+            self.draining = False
+
+    async def decide(self, questions, state, seed, images=None, options=None):
+        """Engine.decide's contract; the request waits for the next batch."""
+        self.refuse_unsupported(images, options)
+        if self.waiting >= self.s.max_queue:
+            raise Overloaded(f"{self.model_name} is at capacity. Retry shortly.")
+        self.build_schema(questions)  # the same limits as the other models, before any read
+        loop = asyncio.get_running_loop()
+        fut = loop.create_future()
+        self.pending.append((state, questions, fut))
+        self.waiting += 1
+        started = time.perf_counter_ns()
+        if not self.draining:
+            self.draining = True
+            loop.create_task(self.drain())
+        try:
+            out = await fut
+        finally:
+            self.waiting -= 1
+            spent = model_ns.get()
+            if spent is not None:
+                spent[0] += time.perf_counter_ns() - started
+        answers = out["answers"]
+        return {k: answers[k] for k in questions}, out["usage"]["input_tokens"], 0
+
+
+ENGINES = {"laya": LayaEngine, "verdict": VerdictEngine, "clm": ClmEngine, "jevk5": JevK5Engine, "d1": D1Engine}

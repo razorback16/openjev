@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  OpenJev serving Liquid AI's d1-2B on 127.0.0.1:8092, started at login and restarted if it exits.
+
+  1. pip install -e '.[d1]' in a venv, and start it once by hand so the weights download.
+  2. Replace /path/to/openjev (two places) with the checkout, and copy this file to
+     ~/Library/LaunchAgents/ai.openjev.d1.plist
+  3. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/ai.openjev.d1.plist
+     Stop it:  launchctl bootout gui/$(id -u)/ai.openjev.d1
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>ai.openjev.d1</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/path/to/openjev/.venv/bin/python</string>
+    <string>-m</string>
+    <string>openjev</string>
+  </array>
+  <key>WorkingDirectory</key><string>/path/to/openjev</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>OPENJEV_BACKEND</key><string>d1</string>
+    <key>OPENJEV_HOST</key><string>127.0.0.1</string>
+    <key>OPENJEV_PORT</key><string>8092</string>
+    <key>OPENJEV_LOG_LEVEL</key><string>warning</string>
+    <key>HF_HUB_OFFLINE</key><string>1</string>
+  </dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <!-- a crash loop waits this long between starts -->
+  <key>ThrottleInterval</key><integer>30</integer>
+  <key>StandardOutPath</key><string>/tmp/openjev-d1.log</string>
+  <key>StandardErrorPath</key><string>/tmp/openjev-d1.log</string>
+</dict>
+</plist>
