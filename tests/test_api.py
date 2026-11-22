@@ -493,6 +493,42 @@ def test_a_cancelled_wait_for_a_chat_slot_leaks_no_capacity():
     assert asyncio.run(main()) == 0
 
 
+def test_an_upstream_that_dies_mid_stream_leaks_no_chat_capacity():
+    """stream() released its slot from a StreamingResponse background task, and
+    Starlette awaits that only after the body iterator finished normally: an
+    upstream that failed mid-reply (a vLLM restart, an OOM kill, a proxy reset)
+    raised past it and kept the slot for good. gen_max_inflight of those 529'd
+    every later request."""
+    from openjev.chat import Generator
+
+    class Dropping(httpx.AsyncByteStream):
+        """One SSE chunk, then the connection fails, as a dropped upstream does."""
+
+        async def __aiter__(self):
+            yield b'data: {"id":"x","model":"dgemma","choices":[{"index":0,"delta":{"content":"he"}}]}\n\n'
+            raise httpx.ReadError("upstream went away mid-stream")
+
+    def handler(request):
+        return httpx.Response(200, stream=Dropping(), headers={"content-type": "text/event-stream"})
+
+    async def main():
+        gen = Generator(Settings(gen_max_inflight=2))
+        gen.client = httpx.AsyncClient(transport=httpx.MockTransport(handler), base_url="http://vllm")
+        # the response and the app's error middleware both see the failure
+        for _ in range(2):
+            r = await gen.stream({"model": "dgemma", "messages": []}, None)
+            try:
+                async for _ in r.body_iterator:
+                    pass
+            except httpx.ReadError:
+                pass
+        await gen.close()
+        return gen.running, gen.slots._value
+
+    running, available = asyncio.run(main())
+    assert (running, available) == (0, 2), f"{running} requests still counted, {available} slots free of 2"
+
+
 def httpx_response(body, status=200):
     import httpx
 

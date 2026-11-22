@@ -21,7 +21,6 @@ import time
 import httpx
 from fastapi import Request
 from fastapi.responses import JSONResponse, StreamingResponse
-from starlette.background import BackgroundTask
 
 from .config import GEN_MODEL
 
@@ -114,14 +113,19 @@ class Generator:
             return oai_error(400 if r.status_code < 500 else 503, upstream_message(r), "invalid_request_error" if r.status_code < 500 else "api_error")
 
         async def lines():
-            async for line in r.aiter_lines():
-                yield line.replace(f'"model":"{self.s.upstream_model}"', f'"model":"{GEN_MODEL}"') + "\n"
+            # The slot is released here, in the finally, not in a background task:
+            # Starlette awaits `background` only after the body iterator finished
+            # normally, so an upstream that failed mid-stream (a vLLM restart, an
+            # OOM kill, a proxy reset) raised straight past it and kept its slot
+            # forever. `n` of those exhausted the server into permanent 529s.
+            try:
+                async for line in r.aiter_lines():
+                    yield line.replace(f'"model":"{self.s.upstream_model}"', f'"model":"{GEN_MODEL}"') + "\n"
+            finally:
+                await r.aclose()
+                release()
 
-        async def done():
-            await r.aclose()
-            release()
-
-        return StreamingResponse(lines(), media_type="text/event-stream", background=BackgroundTask(done))
+        return StreamingResponse(lines(), media_type="text/event-stream")
 
     async def complete(self, upstream, json_mode):
         self.running += 1
